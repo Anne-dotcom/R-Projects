@@ -1,0 +1,71 @@
+---
+title: "Day-1"
+author: Anusha
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---
+
+### Introduction
+
+#### *Day-1 (26th Sept)*
+
+My first piece of R code
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(ggformula)
+library(babynames)
+```
+
+List of babynames
+
+```{r}
+babynames
+```
+
+Searching for my name in the list
+
+```{r}
+babynames %>% filter(name == "Anusha")
+```
+
+Graph for my name
+
+```{r}
+babynames %>% filter(name == "Anusha") %>% 
+  gf_line(n ~ year)
+```
+
+Searching for a name which can be spelled differently like Sara and Sarah.
+
+```{r}
+babynames %>% filter(name == "Sara" | name == "Sarah")
+```
+
+Graph
+
+```{r}
+babynames %>% filter(name == "Sara" | name == "Sarah") %>% 
+  gf_line(n ~ year)
+```
+
+Searching for my friend's name
+
+```{r}
+babynames %>% filter(name == "Shruti")
+```
+
+Graph
+
+```{r}
+babynames %>% filter(name == "Shruti") %>% 
+  gf_line(n ~ year)
+```

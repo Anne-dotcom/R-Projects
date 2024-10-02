@@ -1,0 +1,230 @@
+---
+title: "Day-2 (Summaries)"
+author: "Anusha"
+---
+
+## Introduction
+
+Today, I am working on Data Summaries. We are throwing away data to consolidate and summarize it.
+
+### *Day-2 (27th Sept)*
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(skimr)
+library(mosaic)
+library(knitr)
+library(kableExtra)
+library(babynames)
+library(ggformula)
+```
+
+```{r}
+mpg
+```
+
+First 10 rows of the data set.
+
+> We use 'head' to get the first few elements in the data set.
+>
+> Similarly, 'tail' is used to get the last few elements in the data set.
+
+```{r}
+mpg %>% 
+  head(10)
+```
+
+> Glimpse is a function in dplyr which is a part of the tidyverse package.
+
+```{r}
+mpg %>% dplyr::glimpse()
+```
+
+> Inspect is a function in the package mosaic.
+
+```{r}
+inspect(mpg)
+```
+
+> skim is function in skimr package.
+
+```{r}
+skimr::skim(mpg)
+```
+
+> Now, we change cyl, fl, drv, class and trans from an int to an ordinal variable called factor.
+
+```{r}
+mpg_modified <- mpg %>%
+  dplyr::mutate(
+    cyl = as_factor(cyl),
+    fl = as_factor(fl),
+    drv = as_factor(drv),
+    class = as_factor(class),
+    trans = as_factor(trans)
+  )
+glimpse(mpg_modified)
+```
+
+#### Trying out with a different set!
+
+I imported the library "babynames" from the previous class.
+
+```{r}
+babynames
+```
+
+Converting 'sex' into an ordinal variable, factor.
+
+```{r}
+babynames_modified <- babynames %>%
+  dplyr::mutate(
+    sex = as_factor(sex),
+  )
+glimpse(babynames_modified)
+```
+
+> Glimpse:
+
+```{r}
+glimpse(babynames_modified)
+```
+
+> Inspect:
+
+```{r}
+inspect(babynames_modified)
+```
+
+> Skim:
+
+```{r}
+skimr::skim(babynames_modified)
+```
+
+### Coming back to mpg data set...
+
+Groups and Summaries of Quantitative Variables
+
+> Grouping by cyl:
+>
+> -   As the cyl increases, the average highway mileage reduces.
+
+```{r}
+mpg_modified %>%
+  group_by(cyl) %>%
+  summarize(average_hwy = mean(hwy), count = n())
+```
+
+> Grouping by cy and fl (here, fl is fuel):
+>
+> -   All combinations of both cyl and fl together.
+>
+> -   There are 4 levels of cyl and 5 levels of fl. So, there should be 20 combinations. But it is not 20 because certain cars do not have it.
+
+```{r}
+mpg_modified %>%
+  group_by(cyl, fl) %>%
+  summarize(average_hwy = mean(hwy), count = n())
+```
+
+> Grouping by manufacturer:
+
+```{r}
+mpg %>% group_by(manufacturer) %>% summarize(mean_mileage_Manuf = mean(hwy))
+```
+
+```{r}
+mpg %>% group_by(manufacturer) %>% summarize(mean_mileage_Manuf2 = mean(cty))
+```
+
+### Math Anxiety Data set
+
+> -   AMAS (Adult Manifest Anxiety Scale)
+>
+> -   RCMAS (Revised Children's Manifest Anxiety Scale)
+>
+> -   Arith (Arithmetic Subtest of Intelligence Tests)
+
+```{r}
+math_anxiety <- read_delim(file = "../../Data/MathAnxiety.csv", delim = ";" )
+math_anxiety
+```
+
+> Glimpse:
+
+```{r}
+glimpse(math_anxiety)
+```
+
+> Inspect:
+
+```{r}
+inspect(math_anxiety)
+```
+
+> Skim:
+
+```{r}
+skimr::skim(math_anxiety)
+```
+
+> Converting certain variables into ordinal variables, that is factors.
+>
+> Converting 'Gender' and 'Grade' as factors.
+
+```{r}
+math_modified <- math_anxiety %>%
+  dplyr::mutate(
+     Grade = as_factor(Grade),
+     Gender = as_factor(Gender),
+     Arith = as_factor(Arith)
+  )
+glimpse(math_modified)
+```
+
+Modified Glimpse:
+
+```{r}
+glimpse(math_modified)
+```
+
+Modified Inspect:
+
+```{r}
+inspect(math_modified)
+```
+
+Modified Skim:
+
+```{r}
+skimr::skim(math_modified)
+```
+
+Mean value of the Anxiety in Boys and Girls in Primary and Secondary school
+
+> Calculating Anxiety by grouping Gender:
+
+```{r}
+math_anxiety %>% group_by(Gender) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2 = mean(RCMAS), count =n())
+```
+
+> Calculating Anxiety by grouping Grade:
+
+```{r}
+math_anxiety %>% group_by(Grade) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2 = mean(RCMAS), count =n())
+
+```
+
+> Calculating Anxiety by grouping Gender and Grade:
+
+```{r}
+math_anxiety %>% group_by(Gender,Grade) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2 = mean(RCMAS), count =n())
+```
+
+> Calculating Anxiety by grouping Gender, Grade and Arith:
+
+```{r}
+math_anxiety %>% group_by(Gender,Grade, Arith) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2 = mean(RCMAS), count =n())
+```
