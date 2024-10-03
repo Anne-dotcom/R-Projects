@@ -1,13 +1,14 @@
 [
   {
+    "listing": "/posts/My-Name-Is-Tanya/index.html",
+    "items": []
+  },
+  {
     "listing": "/index.html",
     "items": [
       "/posts/My-Name-Is-Tanya/index.html",
+      "/posts/Class 3/index.html",
       "/posts/Summaries/index.html"
     ]
-  },
-  {
-    "listing": "/posts/My-Name-Is-Tanya/index.html",
-    "items": []
   }
 ]

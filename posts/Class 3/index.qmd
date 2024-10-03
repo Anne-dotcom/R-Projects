@@ -1,0 +1,232 @@
+---
+title: "Day-3 (Counts)"
+---
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(mosaic)
+library(ggformula)
+library(skimr)
+```
+
+```{r}
+taxi <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv")
+taxi
+```
+
+```{r}
+glimpse(taxi)
+```
+
+```{r}
+inspect(taxi)
+```
+
+```{r}
+skimr::skim(taxi)
+```
+
+```{r}
+taxi_modified <- taxi %>%
+  dplyr::mutate(
+    dow = factor(dow,
+      levels = c("Mon", "Tue","Wed", "Thu", "Fri", "Sat", "Sun"),
+      labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+      ordered = TRUE
+    ),
+    ##
+    local = factor(local,
+      levels = c("no", "yes"),
+      labels = c("no", "yes"),
+      ordered = TRUE
+    ),
+    ##
+    month = factor(month,
+      levels = c("Jan", "Feb", "Mar", "Apr"),
+      labels = c("Jan", "Feb", "Mar", "Apr"),
+      ordered = TRUE
+    ),
+    ##
+    tip = factor(tip,
+      levels = c("no", "yes"),
+      labels = c("no", "yes"),
+      ordered = TRUE
+    ),
+    hour = as_factor(hour)
+  )
+glimpse(taxi_modified)
+```
+
+Do more people **tip** than not?
+
+```{r}
+##theme_set(new = theme_custom())
+##
+gf_bar(~tip, data = taxi_modified) %>% 
+  gf_labs(title = "Plot 1A: Counts of Tips")
+```
+
+Does the **tip** depend upon whether the trip is **local** or not?
+
+```{r}
+taxi_modified %>%
+  gf_bar(~local,
+    fill = ~tip,
+    position = "dodge"
+  ) %>%
+  gf_labs(title = "Plot 2A: Dodged Bar Chart")
+
+```
+
+```{r}
+taxi_modified %>%
+  gf_bar(~tip,
+    color = ~local,
+    position = "dodge"
+  ) %>%
+  gf_labs(title = "Plot 2A: Dodged Bar Chart")
+```
+
+Trying another code to plot with different colours:
+
+```{r}
+taxi_modified %>%
+  gf_bar(~local,
+    fill = ~tip,
+    position = "dodge"
+  ) %>%
+  gf_labs(title = "Plot 2A: Dodged Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("powderblue", "pink")))
+```
+
+```{r}
+taxi_modified %>%
+  gf_bar(~local,
+    fill = ~tip,
+    position = "stack"
+  ) %>%
+  gf_labs(title = "Plot 2B: Stacked Bar Chart",
+          subtitle = "Can we spot per group differences in proportions??") %>% 
+  gf_refine(scale_fill_manual(values = c("powderblue", "pink")))
+```
+
+```{r}
+taxi_modified %>%
+  gf_bar(~local,
+    fill = ~tip,
+    position = "fill"
+  ) %>%
+  gf_labs(title = "Plot 2C: Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>% 
+  gf_refine(scale_fill_manual(values = c("powderblue", "pink")))
+```
+
+```{r}
+
+```
+
+Do some cab **companies** get more **tips** than others?
+
+```{r}
+taxi_modified %>%
+  gf_bar(~company, fill = ~tip, position = "fill") %>%
+  gf_labs(
+    title = "Plot 2D: Filled Bar Chart",
+    subtitle = "Shows Per group differences in Proportions!"
+  ) %>%
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% 
+ gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+Does a **tip** depend upon the *distance*, *hour of the day*, *dow* and *month* ?
+
+```{r}
+gf_bar(~hour, fill = ~tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot B: Counts of Tips by Hour") %>% 
+  gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+
+```
+
+```{r}
+gf_bar(~hour, fill = ~tip, 
+       position = "fill",
+       data = taxi_modified) %>%
+  gf_labs(title = "Plot B: Counts of Tips by Hour") %>% 
+  gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+```{r}
+gf_bar(~dow, fill = ~tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot C: Counts of Tips by Day of Week") %>% 
+  gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+```{r}
+gf_bar(~dow, fill = ~tip, 
+       position = "fill",
+       data = taxi_modified) %>%
+  gf_labs(title = "Plot C: Counts of Tips by Day of Week") %>% 
+  gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+```{r}
+gf_bar(~month, fill = ~tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot D: Counts of Tips by Month") %>% 
+gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+```{r}
+gf_bar(~month, fill = ~tip,
+       position = "fill",
+       data = taxi_modified) %>%
+  gf_labs(title = "Plot D: Counts of Tips by Month") %>% 
+gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+```{r}
+gf_bar(~ month | dow, fill = ~tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot E: Counts of Tips by Day of Week and Month")%>% 
+gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+```{r}
+gf_bar(~ dow | hour, fill = ~tip, 
+       position = "fill",
+       data = taxi_modified) %>%
+  gf_labs(
+    title = "Plot F: Counts of Tips by Hour and Day of Week",
+    subtitle = "Is this plot arrangement easy to grasp?"
+  )%>% 
+   gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% 
+   gf_theme(theme(axis.text.y.left = element_text(size = 4, angle = 45, hjust = 1))) %>% 
+gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+```{r}
+gf_bar(~ hour | dow, fill = ~tip, data = taxi_modified) %>%
+  gf_labs(
+    title = "Plot G: Counts of Tips by Hour and Day of Week",
+    subtitle = "Swapped the Facets"
+  ) %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 4, angle = 45, hjust = 1))) %>%
+  gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+## Addiction thing
+
+```{r}
+data("HELPrct")
+HELPrct
+```
+
+```{r}
+HELPrct %>% gf_bar(~substance)
+```
+
+Plotting based on sex:
+
+```{r}
+HELPrct %>% gf_props(~substance, fill = ~sex) %>% 
+  gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
