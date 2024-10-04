@@ -1,5 +1,6 @@
 ---
 title: "Day-4(Quantities)"
+author: Anusha
 ---
 
 ## *Day-4 (Quantities)*
@@ -353,7 +354,7 @@ WE_modified <- WE %>%
 glimpse(WE_modified)
 ```
 
-####  What are the number of people with higher and lower wages?
+#### What are the number of people with higher and lower wages?
 
 ```{r}
 gf_histogram(~wages, data = WE_modified, bins = 100, fill = "pink", alpha = 1.3, color = "black") %>%

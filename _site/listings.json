@@ -6,8 +6,9 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Class-4/index.html",
+      "/posts/Class-3/index.html",
       "/posts/My-Name-Is-Tanya/index.html",
-      "/posts/Class 3/index.html",
       "/posts/Summaries/index.html"
     ]
   }
