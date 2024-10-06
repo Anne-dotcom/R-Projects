@@ -589,6 +589,7 @@ quantitative variables:
 </div>
 <blockquote class="blockquote">
 <p>Now, we change cyl, fl, drv, class and trans from an int to an ordinal variable called factor.</p>
+<p>After running this code, we can see that these variables have successfully been converted to fct. We can see this in the glimpse.</p>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>mpg_modified <span class="ot">&lt;-</span> mpg <span class="sc">%&gt;%</span></span>
@@ -951,6 +952,9 @@ argument.</code></pre>
 </div>
 <blockquote class="blockquote">
 <p>Grouping by manufacturer:</p>
+<ul>
+<li>For Highway: Honda has the highest highway mileage.</li>
+</ul>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>mpg <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(manufacturer) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_mileage_Manuf =</span> <span class="fu">mean</span>(hwy))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -975,6 +979,11 @@ argument.</code></pre>
 15 volkswagen                 29.2</code></pre>
 </div>
 </div>
+<blockquote class="blockquote">
+<ul>
+<li>For City: Honda has the highest city mileage.</li>
+</ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>mpg <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(manufacturer) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_mileage_Manuf2 =</span> <span class="fu">mean</span>(cty))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
