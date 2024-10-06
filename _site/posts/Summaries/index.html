@@ -999,13 +999,25 @@ argument.</code></pre>
 </div>
 </div>
 </section>
+</section>
+<section id="a-1" class="level1">
+<h1>A 1</h1>
+<section id="your-turn" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn">“Your Turn”</h2>
+<ul>
+<li><p>I have chosen to work further on the <em>‘Math Anxiety’</em> data set from ‘Summaries’.</p></li>
+<li><p>I played around with this data even further. To open the data set here, we use the command ‘read_delim’ since this data set is downloaded externally and excel would read the commas and semicolons. This command helps in ignoring these punctuation marks and organizing the data in columns.</p></li>
+<li><p>Here, I have first used ‘glimpse’, ‘inspect’ and ‘skim’ to get an overview of the data and to easily understand which variable is quantitative and qualitative.</p></li>
+<li><p>I have then converted necessary variables into a factor to make ‘summarizing’ it easier and more tactful.</p></li>
+<li><p>Thereafter, I calculated the mean (average) anxiety of children based on gender, grade, gender &amp; grade and gender, grade &amp; arith.</p></li>
+</ul>
 <section id="math-anxiety-data-set" class="level3">
 <h3 class="anchored" data-anchor-id="math-anxiety-data-set">Math Anxiety Data set</h3>
 <blockquote class="blockquote">
 <ul>
 <li><p>AMAS (Adult Manifest Anxiety Scale)</p></li>
 <li><p>RCMAS (Revised Children’s Manifest Anxiety Scale)</p></li>
-<li><p>Arith (Arithmetic Subtest of Intelligence Tests)</p></li>
+<li><p>Arith (Arithmetic Sub test of Intelligence Tests)</p></li>
 </ul>
 </blockquote>
 <div class="cell">
@@ -1259,11 +1271,12 @@ quantitative variables:
 </table>
 </div>
 </div>
+</section>
+<section id="converting-certain-variables-into-ordinal-variables-that-is-factors." class="level3">
+<h3 class="anchored" data-anchor-id="converting-certain-variables-into-ordinal-variables-that-is-factors.">Converting certain variables into ordinal variables, that is factors.</h3>
 <blockquote class="blockquote">
-<p>Converting certain variables into ordinal variables, that is factors.</p>
-<ul>
-<li>Converting ‘Gender’ and ‘Grade’ as factors.</li>
-</ul>
+<p>Converting Grade, Gender and Arith into factors.</p>
+<p>We use the ‘mutate’ function from the dplyr library to convert the variables.</p>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>math_modified <span class="ot">&lt;-</span> math_anxiety <span class="sc">%&gt;%</span></span>
@@ -1271,22 +1284,11 @@ quantitative variables:
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">Grade =</span> <span class="fu">as_factor</span>(Grade),</span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">Gender =</span> <span class="fu">as_factor</span>(Gender),</span>
 <span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">Arith =</span> <span class="fu">as_factor</span>(Arith)</span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(math_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 599
-Columns: 6
-$ Age    &lt;dbl&gt; 1378, 1407, 1379, 1428, 1356, 1350, 1336, 1393, 1317, 1348, 141…
-$ Gender &lt;fct&gt; Boy, Boy, Girl, Girl, Boy, Girl, Boy, Boy, Girl, Boy, Boy, Boy,…
-$ Grade  &lt;fct&gt; Secondary, Secondary, Secondary, Secondary, Secondary, Secondar…
-$ AMAS   &lt;dbl&gt; 9, 18, 23, 19, 23, 27, 22, 17, 28, 20, 16, 20, 21, 36, 16, 27, …
-$ RCMAS  &lt;dbl&gt; 20, 8, 26, 18, 20, 33, 23, 11, 32, 30, 10, 4, 23, 26, 24, 21, 3…
-$ Arith  &lt;fct&gt; 6, 6, 5, 7, 1, 1, 4, 7, 2, 6, 2, 5, 2, 6, 2, 7, 2, 4, 7, 3, 8, …</code></pre>
-</div>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Modified Glimpse:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(math_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(math_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 599
 Columns: 6
@@ -1300,7 +1302,7 @@ $ Arith  &lt;fct&gt; 6, 6, 5, 7, 1, 1, 4, 7, 2, 6, 2, 5, 2, 6, 2, 7, 2, 4, 7, 3,
 </div>
 <p>Modified Inspect:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inspect</span>(math_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inspect</span>(math_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 categorical variables:  
@@ -1322,7 +1324,7 @@ quantitative variables:
 </div>
 <p>Modified Skim:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(math_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(math_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Data summary</caption>
@@ -1486,9 +1488,21 @@ quantitative variables:
 </table>
 </div>
 </div>
-<p>Mean value of the Anxiety in Boys and Girls in Primary and Secondary school</p>
+<section id="mean-value-of-the-anxiety-in-boys-and-girls-in-primary-and-secondary-school" class="level4">
+<h4 class="anchored" data-anchor-id="mean-value-of-the-anxiety-in-boys-and-girls-in-primary-and-secondary-school">Mean value of the Anxiety in Boys and Girls in Primary and Secondary school</h4>
+<ol type="1">
+<li>Here, mean_anx1 is AMAS and mean_anx2 is RCMAS.</li>
+<li>We uses group_by command to group a data by a specific variable.</li>
+<li>summarize is used to create a summary of the data by calculating specific aggregate statistics (eg. mean_anx1, mean_anx2)</li>
+</ol>
+<blockquote class="blockquote">
+<p>Calculating Anxiety by grouping Gender:</p>
+<ul>
+<li>We can infer that girls have more anxiety than boys.</li>
+</ul>
+</blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>math_anxiety <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Gender) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_anx1 =</span> <span class="fu">mean</span>(AMAS), <span class="at">mean_anx2 =</span> <span class="fu">mean</span>(RCMAS), <span class="at">count =</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>math_anxiety <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Gender) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_anx1 =</span> <span class="fu">mean</span>(AMAS), <span class="at">mean_anx2 =</span> <span class="fu">mean</span>(RCMAS), <span class="at">count =</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   Gender mean_anx1 mean_anx2 count
@@ -1498,10 +1512,36 @@ quantitative variables:
 </div>
 </div>
 <blockquote class="blockquote">
-<p>Calculating Anxiety by grouping Gender and Grade:</p>
+<p>Calculating Anxiety by grouping Grade:</p>
+<ul>
+<li>Secondary school students have more anxiety.</li>
+</ul>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>math_anxiety <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Gender,Grade) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_anx1 =</span> <span class="fu">mean</span>(AMAS), <span class="at">mean_anx2 =</span> <span class="fu">mean</span>(RCMAS), <span class="at">count =</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>math_anxiety <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Grade) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_anx1 =</span> <span class="fu">mean</span>(AMAS), <span class="at">mean_anx2 =</span> <span class="fu">mean</span>(RCMAS), <span class="at">count =</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  Grade     mean_anx1 mean_anx2 count
+  &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;
+1 Primary        21.8      19.6   401
+2 Secondary      22.3      18.5   198</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Calculating Anxiety by grouping Gender and Grade:</p>
+<ul>
+<li><p>Anxiety levels increase for both boys and girls as they move from primary to secondary school.</p></li>
+<li><p>Girls tend to have higher anxiety levels than boys in both primary and secondary school. Specifically:</p>
+<ul>
+<li><p>In primary school, girls have a higher mean anxiety score (22.73 for mean_anx1, 20.65 for mean_anx2) compared to boys (20.95 for mean_anx1, 18.56 for mean_anx2).</p></li>
+<li><p>In secondary school, the same pattern holds, with girls having higher mean anxiety scores (23.49 for mean_anx1, 20.30 for mean_anx2) than boys (21.52 for mean_anx1, 17.40 for mean_anx2).</p></li>
+</ul></li>
+<li><p>Boys show a slight increase in anxiety (mean_anx1) from primary to secondary school, but a slight decrease in mean_anx2. Girls show a clearer increase in mean_anx1 as they move to secondary school.</p></li>
+<li><p>The comparison in secondary school is less balanced due to the lower number of girls, which may affect the robustness of those conclusions.</p></li>
+</ul>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>math_anxiety <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Gender,Grade) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_anx1 =</span> <span class="fu">mean</span>(AMAS), <span class="at">mean_anx2 =</span> <span class="fu">mean</span>(RCMAS), <span class="at">count =</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'Gender'. You can override using the
 `.groups` argument.</code></pre>
@@ -1519,9 +1559,14 @@ quantitative variables:
 </div>
 <blockquote class="blockquote">
 <p>Calculating Anxiety by grouping Gender, Grade and Arith:</p>
+<ul>
+<li><p>In primary school, anxiety levels (mean_anx1 and mean_anx2) tend to be higher in lower arithmetic levels (particularly Arith 2), and they decrease as boys progress to higher levels (Arith 7 and Arith 8).</p></li>
+<li><p>Primary school girls generally exhibit increasing anxiety levels up to Arith 6, after which anxiety decreases.</p></li>
+<li><p>Secondary school girls exhibit consistently higher anxiety levels compared to primary school girls, with particularly high levels in early arithmetic stages.</p></li>
+</ul>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>math_anxiety <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Gender,Grade, Arith) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_anx1 =</span> <span class="fu">mean</span>(AMAS), <span class="at">mean_anx2 =</span> <span class="fu">mean</span>(RCMAS), <span class="at">count =</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>math_anxiety <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Gender,Grade, Arith) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">mean_anx1 =</span> <span class="fu">mean</span>(AMAS), <span class="at">mean_anx2 =</span> <span class="fu">mean</span>(RCMAS), <span class="at">count =</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'Gender', 'Grade'. You can override using
 the `.groups` argument.</code></pre>
@@ -1546,6 +1591,8 @@ the `.groups` argument.</code></pre>
 </div>
 
 
+</section>
+</section>
 </section>
 </section>
 

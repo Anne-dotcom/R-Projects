@@ -308,23 +308,23 @@ book
 ```
 
 ```{r}
-book %>%
-  head(10) %>%
-  kbl(
+# book %>%
+ # head(10) %>%
+#  kbl(
     # add Human Readable column names
-    col.names = c(
-      "Count of type of Ban", "Banned from classrooms", "Banned from libraries",
-      "Banned from libraries & classrooms", "Banned Pending Investigation", "Grand Total"
-    ),
-    caption = "Banned Books Dataset"
-  ) %>%
-  kable_styling(
-    bootstrap_options = c(
-      "striped", "hover",
-      "condensed", "responsive"
-    ),
-    full_width = F, position = "center"
-  )
+ #   col.names = c(
+  ##    "Count of type of Ban", "Banned from classrooms", "Banned from libraries",
+    #  "Banned from libraries & classrooms", "Banned Pending Investigation", "Grand Total"
+    #),
+#    caption = "Banned Books Dataset"
+ # ) %>%
+  #kable_styling(
+    #bootstrap_options = c(
+     # "striped", "hover",
+     # "condensed", "responsive"
+  #  ),
+   # full_width = F, position = "center"
+  #)
 ```
 
 ```{r}
@@ -387,17 +387,7 @@ gf_bar(~classrooms, fill = "lightyellow", color = "black") %>%
 > -   In the Grand Total, 1 book is definitely banned more in classrooms.
 
 ```{r}
-book_modified <- book_modified %>%
-  dplyr::rename(
-    classrooms = `Column Labels`,
-    total = `...6`)
-book_modified %>%
-   drop_na(total, classrooms) %>% 
-  gf_bar(~total,
-    fill = ~ classrooms,
-    position = "fill"
-  ) %>%
-  gf_labs(title = "Plot 1B: Filled Bar Chart")
+
 ```
 
 > -   Plot for books banned in libraries.
@@ -424,17 +414,7 @@ gf_bar(~libraries, fill = "lightyellow", color = "black") %>%
 > -   2 books are banned in some libraries across some states.
 
 ```{r}
-book_modified <- book_modified %>%
-  dplyr::rename(
-    libraries = `...3`,
-    total = `...6`)
-book_modified %>%
-   drop_na(total, libraries) %>% 
-  gf_bar(~total,
-    fill = ~ libraries,
-    position = "fill"
-  ) %>%
-  gf_labs(title = "Plot 2B: Filled Bar Chart")
+
 ```
 
 > -   Plot for books banned in libraries and classrooms.
@@ -457,15 +437,5 @@ gf_bar(~both, fill = "lightyellow", color = "black") %>%
 > -   Plot for banned in classrooms and libraries in total for each state.
 
 ```{r}
-book_modified <- book_modified %>%
-  dplyr::rename(
-    both = `...5`,
-    total = `...6`)
-book_modified %>%
-   drop_na(total, both) %>% 
-  gf_bar(~total,
-    fill = ~ both,
-    position = "dodge"
-  ) %>%
-  gf_labs(title = "Plot 3B: Dodged Bar Chart")
+
 ```

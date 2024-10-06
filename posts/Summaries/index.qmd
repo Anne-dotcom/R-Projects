@@ -141,7 +141,7 @@ mpg %>% group_by(manufacturer) %>% summarize(mean_mileage_Manuf2 = mean(cty))
 
 # A 1
 
-## "Your Turn" 
+## "Your Turn"
 
 -   I have chosen to work further on the *'Math Anxiety'* data set from 'Summaries'.
 
