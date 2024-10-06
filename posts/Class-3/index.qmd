@@ -486,3 +486,205 @@ gf_bar(~both, fill = "lightyellow", color = "black") %>%
 #  gf_labs(title = "Plot 3B: Dodged Bar Chart")
 
 ```
+
+## Data set 2 - *'Fertility'*
+
+-   I am working on another data set as well.
+
+```{r}
+fertility <- read_delim(file = "../../Data/Fertility.csv", delim = "," )
+fertility
+```
+
+-   Now, to get an overview, we use glimpse, inspect and skim.
+
+```{r}
+glimpse(fertility)
+```
+
+```{r}
+inspect(fertility)
+```
+
+```{r}
+skim(fertility)
+```
+
+### Converting qualitative data into ordinal variables \~ Data Munging
+
+-   We are converting morekids, gender1, gender2, afam, hispanic and other into ord.
+
+-   This is because these can be put on a scale and have only 2 levels,
+
+```{r}
+ferti <- fertility %>%
+  mutate(
+    morekids = factor(morekids,
+      levels = c("no", "yes"),
+      labels = c("no", "yes"),
+      ordered = TRUE
+    ),
+    ##
+    gender1 = factor(gender1,
+      levels = c("male", "female"),
+      labels = c("male", "female"),
+      ordered = TRUE
+    ),
+    ##
+    gender2 = factor(gender2,
+      levels = c("male", "female"),
+      labels = c("male", "female"),
+      ordered = TRUE
+    ),
+    ##
+    afam = factor(afam,
+      levels = c("no", "yes"),
+      labels = c("no", "yes"),
+      ordered = TRUE             
+      ),
+    ##
+    hispanic = factor(hispanic,
+     levels = c("no", "yes"),
+      labels = c("no", "yes"),
+      ordered = TRUE   
+    ),
+    ##
+    other = factor(other,
+      levels = c("no", "yes"),
+      labels = c("no", "yes"),
+      ordered = TRUE             
+      )
+  )
+ferti %>% glimpse()
+```
+
+### Questions
+
+> **Are there many people who want more kids?**
+>
+> -   From the plot, we see that there are not many people who want more kids.
+
+```{r}
+gf_bar(~morekids, data = ferti, fill = "lavender", color = "black") %>%
+  gf_labs(title = "Plot 1A: Counts of people who want more kids")
+```
+
+> **Does this decision depend upon the gender or age?**
+>
+> Gender:
+>
+> -   From this plot we see that, gender does affect that decision. There are more males who do not want more kids.
+
+```{r}
+ferti %>%
+  gf_bar(~gender1,
+    fill = ~morekids,
+    position = "dodge",
+    color = "black"
+  ) %>%
+  gf_labs(title = "Plot 2A: Dodged Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("lavender", "pink"))) 
+```
+
+> Age:
+
+```{r}
+ferti %>%
+  gf_bar(~age,
+    fill = ~morekids,
+    position = "dodge",
+    color = "black"
+  ) %>%
+  gf_labs(title = "Plot 2B: Dodged Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("lavender", "pink"))) 
+```
+
+> -   This plot tells us that when people from their late 20s start wanting more kids.
+>
+> -   People aged around 20 do not want kids. But people around the age of 35 want more kids, though the number is still lower.
+
+```{r}
+ferti %>%
+  gf_bar(~age,
+    fill = ~morekids,
+    position = "fill",
+    color = "black"
+  ) %>%
+  gf_labs(title = "Plot 2C: Filled Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("lavender", "pink"))) 
+```
+
+> **Does race play an important role here?**
+>
+> -   African-American (afam):
+
+```{r}
+ferti %>%
+  gf_bar(~afam,
+    fill = ~morekids,
+    position = "stack",
+    color = "black"
+  ) %>%
+  gf_labs(title = "Plot 3A: Stacked Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("lavender", "pink"))) 
+```
+
+> -   For a more clear understanding, we have created a filled bar graph.
+>
+> -   In this graph we see that, even though the number of yeses are still low, African-Americans prefer having more kids.
+
+```{r}
+ferti %>%
+  gf_bar(~afam,
+    fill = ~morekids,
+    position = "fill",
+    color = "black"
+  ) %>%
+  gf_labs(title = "Plot 3B: Filled Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("lavender", "pink"))) 
+```
+
+> -   Hispanics:
+>
+>     -   This filled bar graph shows that Hispanics prefer having more kids. Here, the number of yeses are more.
+
+```{r}
+ferti %>%
+  gf_bar(~hispanic,
+    fill = ~morekids,
+    position = "fill",
+    color = "black"
+  ) %>%
+  gf_labs(title = "Plot 3C: Filled Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("lavender", "pink"))) 
+```
+
+> -   Other:
+>
+>     -   Here, we see that in other races/cultures there are slightly more people who want to have more kids.
+
+```{r}
+ferti %>%
+  gf_bar(~other,
+    fill = ~morekids,
+    position = "fill",
+    color = "black"
+  ) %>%
+  gf_labs(title = "Plot 3C: Filled Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("lavender", "pink"))) 
+```
+
+> **How does work affect this decision?**
+>
+> -   As we can see, having a job has an impact on the decision as working people prefer to not have more kids possibly due to time constraint and working hours.
+
+```{r}
+ferti %>%
+  gf_bar(~work,
+    fill = ~morekids,
+    position = "fill",
+    color = "black"
+  ) %>%
+  gf_labs(title = "Plot 3C: Filled Bar Chart") %>% 
+  gf_refine(scale_fill_manual(values = c("lavender", "pink"))) 
+```
