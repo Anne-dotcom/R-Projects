@@ -387,7 +387,21 @@ gf_bar(~classrooms, fill = "lightyellow", color = "black") %>%
 > -   In the Grand Total, 1 book is definitely banned more in classrooms.
 
 ```{r}
+#Code for the graph.
 
+#print(head(book_modified))
+
+#book_modified <- book_modified %>%
+#dplyr::rename(
+#    classrooms = `Column Labels`,
+#    total = `...6`)
+#book_modified %>%
+#   drop_na(`...6`, `Column Labels`) %>% 
+#  gf_bar(~`...6`, `Column Labels`, 
+#    fill = ~ `Column Labels`,
+#    position = "fill"
+#  ) %>%
+#  gf_labs(title = "Plot 1B: Filled Bar Chart")
 ```
 
 > -   Plot for books banned in libraries.
@@ -414,7 +428,19 @@ gf_bar(~libraries, fill = "lightyellow", color = "black") %>%
 > -   2 books are banned in some libraries across some states.
 
 ```{r}
+#Code for the graph.
 
+#book_modified <- book_modified %>%
+# dplyr::rename(
+#    libraries = `...3`,
+#    total = `...6`)
+#book_modified %>%
+#   drop_na(total, libraries) %>% 
+#  gf_bar(~total,
+#    fill = ~ libraries,
+#    position = "fill"
+#  ) %>%
+#  gf_labs(title = "Plot 2B: Filled Bar Chart")
 ```
 
 > -   Plot for books banned in libraries and classrooms.
@@ -437,5 +463,18 @@ gf_bar(~both, fill = "lightyellow", color = "black") %>%
 > -   Plot for banned in classrooms and libraries in total for each state.
 
 ```{r}
+#Code for the graph.
+
+#book_modified <- book_modified %>%
+#  dplyr::rename(
+#   both = `...5`,
+#    total = `...6`)
+#book_modified %>%
+#  drop_na(total, both) %>% 
+#  gf_bar(~total,
+#    fill = ~ both,
+#    position = "dodge"
+#  ) %>%
+#  gf_labs(title = "Plot 3B: Dodged Bar Chart")
 
 ```
