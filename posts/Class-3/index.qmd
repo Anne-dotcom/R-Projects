@@ -308,6 +308,8 @@ gf_percents(~substance,
 
 ## "Your Turn"
 
+## Data set 1 - *Banned books* 
+
 -   I have chosen to work on the 'banned' data set (banned books) from 'Counts'.
 
 ```{r}
@@ -375,7 +377,7 @@ inspect(book_modified)
 skim(book_modified)
 ```
 
-### Bar Graphs
+### Bar Graphs:
 
 > -   Plot of books banned in the classroom.
 >
@@ -491,6 +493,8 @@ gf_bar(~both, fill = "lightyellow", color = "black") %>%
 
 -   I am working on another data set as well.
 
+-   This data set conveys details about fertility and the number and type of people who would or wouldn't prefer to have more children.
+
 ```{r}
 fertility <- read_delim(file = "../../Data/Fertility.csv", delim = "," )
 fertility
@@ -557,6 +561,8 @@ ferti <- fertility %>%
   )
 ferti %>% glimpse()
 ```
+
+### Bar Graphs:
 
 ### Questions
 
