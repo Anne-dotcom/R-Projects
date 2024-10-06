@@ -11,6 +11,8 @@ library(ggformula)
 library(skimr)
 ```
 
+## Data set of taxis rides in Chicago
+
 ```{r}
 taxi <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv")
 taxi
@@ -27,6 +29,10 @@ inspect(taxi)
 ```{r}
 skimr::skim(taxi)
 ```
+
+#### Converting some variables into ordinal variables (ord) \~ Data Munging
+
+> Converting dow, local, month and tip into ord.
 
 ```{r}
 taxi_modified <- taxi %>%
@@ -59,7 +65,9 @@ taxi_modified <- taxi %>%
 glimpse(taxi_modified)
 ```
 
-Do more people **tip** than not?
+> Do more people **tip** than not?
+>
+> > People do tip more.
 
 ```{r}
 ##theme_set(new = theme_custom())
@@ -68,7 +76,9 @@ gf_bar(~tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 1A: Counts of Tips")
 ```
 
-Does the **tip** depend upon whether the trip is **local** or not?
+> Does the **tip** depend upon whether the trip is **local** or not?
+>
+> > Yes, the depends on whether the ride was local or not.
 
 ```{r}
 taxi_modified %>%
@@ -79,6 +89,8 @@ taxi_modified %>%
   gf_labs(title = "Plot 2A: Dodged Bar Chart")
 
 ```
+
+> > Comparitive graph to get a clear answer.
 
 ```{r}
 taxi_modified %>%
@@ -101,6 +113,8 @@ taxi_modified %>%
   gf_refine(scale_fill_manual(values = c("powderblue", "pink")))
 ```
 
+> > -   People tip more when the trip is not local.
+
 ```{r}
 taxi_modified %>%
   gf_bar(~local,
@@ -111,6 +125,8 @@ taxi_modified %>%
           subtitle = "Can we spot per group differences in proportions??") %>% 
   gf_refine(scale_fill_manual(values = c("powderblue", "pink")))
 ```
+
+> > -   The below graph is more accurate, and tells us the same that, people tip more when the trip is non local.
 
 ```{r}
 taxi_modified %>%
@@ -123,11 +139,11 @@ taxi_modified %>%
   gf_refine(scale_fill_manual(values = c("powderblue", "pink")))
 ```
 
-```{r}
-
-```
-
-Do some cab **companies** get more **tips** than others?
+> Do some cab **companies** get more **tips** than others?
+>
+> > -   Here, we see 'Flash Cab' gets the least amount of tips.
+> >
+> > -   'Chicago Independents' get the most tips.
 
 ```{r}
 taxi_modified %>%
@@ -140,7 +156,11 @@ taxi_modified %>%
  gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
-Does a **tip** depend upon the *distance*, *hour of the day*, *dow* and *month* ?
+> Does a **tip** depend upon the *distance*, *hour of the day*, *dow* and *month* ?
+>
+> > -   By hour :
+> >
+> >     -   2 am and 4 am gets the most tips.
 
 ```{r}
 gf_bar(~hour, fill = ~tip, data = taxi_modified) %>%
@@ -157,6 +177,10 @@ gf_bar(~hour, fill = ~tip,
   gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
+-   By dow:
+
+    -   Thursdays and Sundays get more tips.
+
 ```{r}
 gf_bar(~dow, fill = ~tip, data = taxi_modified) %>%
   gf_labs(title = "Plot C: Counts of Tips by Day of Week") %>% 
@@ -171,6 +195,10 @@ gf_bar(~dow, fill = ~tip,
   gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
+-   By month:
+
+    -   April gets the most tips.
+
 ```{r}
 gf_bar(~month, fill = ~tip, data = taxi_modified) %>%
   gf_labs(title = "Plot D: Counts of Tips by Month") %>% 
@@ -184,6 +212,8 @@ gf_bar(~month, fill = ~tip,
   gf_labs(title = "Plot D: Counts of Tips by Month") %>% 
 gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
+
+> > This plot gives inoformation on the tips collected on each day of each month.
 
 ```{r}
 gf_bar(~ month | dow, fill = ~tip, data = taxi_modified) %>%
@@ -204,6 +234,8 @@ gf_bar(~ dow | hour, fill = ~tip,
 gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
+> > This plot give a more detailed information on tipping on the hour of each specific day of the week.
+
 ```{r}
 gf_bar(~ hour | dow, fill = ~tip, data = taxi_modified) %>%
   gf_labs(
@@ -214,7 +246,7 @@ gf_bar(~ hour | dow, fill = ~tip, data = taxi_modified) %>%
   gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
-## Addiction thing
+### Addiction Data set - 'HELPrct'
 
 ```{r}
 data("HELPrct")
@@ -230,4 +262,210 @@ Plotting based on sex:
 ```{r}
 HELPrct %>% gf_props(~substance, fill = ~sex) %>% 
   gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
+```
+
+```{r}
+gf_props(~substance,
+  data = mosaicData::HELPrct, fill = ~sex,
+  position = "dodge"
+) %>%
+  gf_labs(title = "Plotting Proportions using gf_props") %>% 
+   gf_refine(scale_fill_manual(values = c("violet", "pink")))
+```
+
+```{r}
+gf_props(~substance,
+  data = mosaicData::HELPrct, fill = ~sex,
+  position = "fill"
+) %>% 
+  gf_labs(title = "Plotting Proportions using gf_props") %>% 
+    gf_refine(scale_fill_manual(values = c("violet", "pink")))
+```
+
+```{r}
+gf_percents(~substance,
+  data = mosaicData::HELPrct, fill = ~sex,
+  position = "dodge"
+) %>%
+  gf_refine(
+    scale_y_continuous(
+      labels = scales::label_percent(scale = 1)
+    )
+  ) %>%
+  gf_labs(title = "Plotting Percentages using gf_percents")%>% 
+    gf_refine(scale_fill_manual(values = c("violet", "pink")))
+```
+
+# A 1
+
+## "Your Turn"
+
+-   I have chosen to work on the 'IMDb Movies India' data set from 'Counts'.
+
+```{r}
+book <- read_delim(file = "../../Data/banned.csv", delim = "," )
+book
+```
+
+```{r}
+book %>%
+  head(10) %>%
+  kbl(
+    # add Human Readable column names
+    col.names = c(
+      "Count of type of Ban", "Banned from classrooms", "Banned from libraries",
+      "Banned from libraries & classrooms", "Banned Pending Investigation", "Grand Total"
+    ),
+    caption = "Banned Books Dataset"
+  ) %>%
+  kable_styling(
+    bootstrap_options = c(
+      "striped", "hover",
+      "condensed", "responsive"
+    ),
+    full_width = F, position = "center"
+  )
+```
+
+```{r}
+glimpse(book)
+```
+
+```{r}
+inspect(book)
+```
+
+```{r}
+skim(book)
+```
+
+### Converting some variables into ordinal variables \~ Data Munging
+
+> -   Converting 'Banned in Classrooms' (Column Labels) and 'Banned from Libraries and Classrooms' (..4) into ordinal variables.
+>
+> -   I am not converting the any other variable into factors because they have more levels.
+
+```{r}
+book_modified <- book %>%
+  dplyr::mutate(
+    `Column Labels` = as_factor(`Column Labels`),
+    ...4 = as_factor(...4),
+    ...3 = as_factor(...3),
+    ...5 = as_factor(...5)
+  )
+```
+
+```{r}
+glimpse(book_modified)
+```
+
+```{r}
+inspect(book_modified)
+```
+
+```{r}
+skim(book_modified)
+```
+
+### Bar Graphs
+
+> -   Plot of books banned in the classroom.
+>
+> -   1 book is banned from at least 5 classrooms.
+
+```{r}
+book_modified <- book_modified %>%
+  dplyr::rename(classrooms = `Column Labels`)
+book_modified %>% 
+  drop_na(classrooms) %>%
+gf_bar(~classrooms, fill = "lightyellow", color = "black") %>%
+  gf_labs(title = "Plot 1A: Counts of books Banned from the classroom") 
+```
+
+> -   Plot for books banned in the classroom and in total for each state.
+>
+> -   In the Grand Total, 1 book is definitely banned more in classrooms.
+
+```{r}
+book_modified <- book_modified %>%
+  dplyr::rename(
+    classrooms = `Column Labels`,
+    total = `...6`)
+book_modified %>%
+   drop_na(total, classrooms) %>% 
+  gf_bar(~total,
+    fill = ~ classrooms,
+    position = "fill"
+  ) %>%
+  gf_labs(title = "Plot 1B: Filled Bar Chart")
+```
+
+> -   Plot for books banned in libraries.
+>
+> -   There is 1 book definitely banned from libraries in 6 states.
+>
+> -   2 books are banned in 2 states.
+>
+> -   Several states have 1 to 2 books banned from libraries. This represents a relatively small number but still shows that the issue is widespread across many states.
+
+```{r}
+book_modified <- book_modified %>%
+  dplyr::rename(libraries = `...3`)
+book_modified %>% 
+  drop_na(libraries) %>%
+gf_bar(~libraries, fill = "lightyellow", color = "black") %>%
+  gf_labs(title = "Plot 1A: Counts of books Banned from libraries")  
+```
+
+> -   Plot for books banned in libraries in total for each state.
+>
+> -   In the Grand Total, 1 book is definitely banned more in libraries.
+>
+> -   2 books are banned in some libraries across some states.
+
+```{r}
+book_modified <- book_modified %>%
+  dplyr::rename(
+    libraries = `...3`,
+    total = `...6`)
+book_modified %>%
+   drop_na(total, libraries) %>% 
+  gf_bar(~total,
+    fill = ~ libraries,
+    position = "fill"
+  ) %>%
+  gf_labs(title = "Plot 2B: Filled Bar Chart")
+```
+
+> -   Plot for books banned in libraries and classrooms.
+>
+> -   1 book is mostly banned from both classrooms and libraries in 4 states.
+>
+> -   9 books are banned from both in 2 states.
+>
+> -   2 books are banned form both in 2 states.
+
+```{r}
+book_modified <- book_modified %>%
+  dplyr::rename(both = `...5`)
+book_modified %>% 
+  drop_na(both) %>%
+gf_bar(~both, fill = "lightyellow", color = "black") %>%
+  gf_labs(title = "Plot 3A: Counts of books Banned from libraries and classrooms")
+```
+
+> -   Plot for banned in classrooms and libraries in total for each state.
+
+```{r}
+book_modified <- book_modified %>%
+  dplyr::rename(
+    both = `...5`,
+    total = `...6`)
+book_modified %>%
+   drop_na(total, both) %>% 
+  gf_bar(~total,
+    fill = ~ both,
+    position = "dodge"
+  ) %>%
+  gf_labs(title = "Plot 3B: Dodged Bar Chart")
 ```

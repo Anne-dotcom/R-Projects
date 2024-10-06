@@ -139,13 +139,27 @@ mpg %>% group_by(manufacturer) %>% summarize(mean_mileage_Manuf = mean(hwy))
 mpg %>% group_by(manufacturer) %>% summarize(mean_mileage_Manuf2 = mean(cty))
 ```
 
+# A 1
+
+## "Your Turn" 
+
+-   I have chosen to work further on the *'Math Anxiety'* data set from 'Summaries'.
+
+-   I played around with this data even further. To open the data set here, we use the command 'read_delim' since this data set is downloaded externally and excel would read the commas and semicolons. This command helps in ignoring these punctuation marks and organizing the data in columns.
+
+-   Here, I have first used 'glimpse', 'inspect' and 'skim' to get an overview of the data and to easily understand which variable is quantitative and qualitative.
+
+-   I have then converted necessary variables into a factor to make 'summarizing' it easier and more tactful.
+
+-   Thereafter, I calculated the mean (average) anxiety of children based on gender, grade, gender & grade and gender, grade & arith.
+
 ### Math Anxiety Data set
 
 > -   AMAS (Adult Manifest Anxiety Scale)
 >
 > -   RCMAS (Revised Children's Manifest Anxiety Scale)
 >
-> -   Arith (Arithmetic Subtest of Intelligence Tests)
+> -   Arith (Arithmetic Sub test of Intelligence Tests)
 
 ```{r}
 math_anxiety <- read_delim(file = "../../Data/MathAnxiety.csv", delim = ";" )
@@ -170,9 +184,11 @@ inspect(math_anxiety)
 skimr::skim(math_anxiety)
 ```
 
-> Converting certain variables into ordinal variables, that is factors.
+### Converting certain variables into ordinal variables, that is factors.
+
+> Converting Grade, Gender and Arith into factors.
 >
-> Converting 'Gender' and 'Grade' as factors.
+> We use the 'mutate' function from the dplyr library to convert the variables.
 
 ```{r}
 math_modified <- math_anxiety %>%
@@ -181,7 +197,6 @@ math_modified <- math_anxiety %>%
      Gender = as_factor(Gender),
      Arith = as_factor(Arith)
   )
-glimpse(math_modified)
 ```
 
 Modified Glimpse:
@@ -202,15 +217,23 @@ Modified Skim:
 skimr::skim(math_modified)
 ```
 
-Mean value of the Anxiety in Boys and Girls in Primary and Secondary school
+#### Mean value of the Anxiety in Boys and Girls in Primary and Secondary school
+
+1.  Here, mean_anx1 is AMAS and mean_anx2 is RCMAS.
+2.  We uses group_by command to group a data by a specific variable.
+3.  summarize is used to create a summary of the data by calculating specific aggregate statistics (eg. mean_anx1, mean_anx2)
 
 > Calculating Anxiety by grouping Gender:
+>
+> -   We can infer that girls have more anxiety than boys.
 
 ```{r}
 math_anxiety %>% group_by(Gender) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2 = mean(RCMAS), count =n())
 ```
 
 > Calculating Anxiety by grouping Grade:
+>
+> -   Secondary school students have more anxiety.
 
 ```{r}
 math_anxiety %>% group_by(Grade) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2 = mean(RCMAS), count =n())
@@ -218,12 +241,30 @@ math_anxiety %>% group_by(Grade) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2
 ```
 
 > Calculating Anxiety by grouping Gender and Grade:
+>
+> -   Anxiety levels increase for both boys and girls as they move from primary to secondary school.
+>
+> -   Girls tend to have higher anxiety levels than boys in both primary and secondary school. Specifically:
+>
+>     -   In primary school, girls have a higher mean anxiety score (22.73 for mean_anx1, 20.65 for mean_anx2) compared to boys (20.95 for mean_anx1, 18.56 for mean_anx2).
+>
+>     -   In secondary school, the same pattern holds, with girls having higher mean anxiety scores (23.49 for mean_anx1, 20.30 for mean_anx2) than boys (21.52 for mean_anx1, 17.40 for mean_anx2).
+>
+> -   Boys show a slight increase in anxiety (mean_anx1) from primary to secondary school, but a slight decrease in mean_anx2. Girls show a clearer increase in mean_anx1 as they move to secondary school.
+>
+> -   The comparison in secondary school is less balanced due to the lower number of girls, which may affect the robustness of those conclusions.
 
 ```{r}
 math_anxiety %>% group_by(Gender,Grade) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2 = mean(RCMAS), count =n())
 ```
 
 > Calculating Anxiety by grouping Gender, Grade and Arith:
+>
+> -   In primary school, anxiety levels (mean_anx1 and mean_anx2) tend to be higher in lower arithmetic levels (particularly Arith 2), and they decrease as boys progress to higher levels (Arith 7 and Arith 8).
+>
+> -   Primary school girls generally exhibit increasing anxiety levels up to Arith 6, after which anxiety decreases.
+>
+> -   Secondary school girls exhibit consistently higher anxiety levels compared to primary school girls, with particularly high levels in early arithmetic stages.
 
 ```{r}
 math_anxiety %>% group_by(Gender,Grade, Arith) %>% summarize(mean_anx1 = mean(AMAS), mean_anx2 = mean(RCMAS), count =n())
