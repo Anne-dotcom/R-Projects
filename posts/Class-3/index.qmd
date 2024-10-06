@@ -341,9 +341,9 @@ skim(book)
 
 ### Converting some variables into ordinal variables \~ Data Munging
 
-> -   Converting 'Banned in Classrooms' (Column Labels) and 'Banned from Libraries and Classrooms' (..4) into ordinal variables.
+> -   Converting 'Banned in Classrooms' (Column Labels), 'Banned from Libraries and Classrooms' (..4) and 'Banned from classrooms and libraries' (...5) into ordinal variables.
 >
-> -   I am not converting the any other variable into factors because they have more levels.
+> -   I am not converting the any other variable into factors because they have more levels and also because these variables have a numerical value.
 
 ```{r}
 book_modified <- book %>%
