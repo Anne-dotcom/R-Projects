@@ -558,7 +558,7 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 <blockquote class="blockquote">
-<p>Do more people <strong>tip</strong> than not?</p>
+<p><strong><em>Do more people tip than not?</em></strong></p>
 <blockquote class="blockquote">
 <p>People do tip more.</p>
 </blockquote>
@@ -577,7 +577,7 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 <blockquote class="blockquote">
-<p>Does the <strong>tip</strong> depend upon whether the trip is <strong>local</strong> or not?</p>
+<p><strong><em>Does the tip depend upon whether the trip is local or not?</em></strong></p>
 <blockquote class="blockquote">
 <p>Yes, the depends on whether the ride was local or not.</p>
 </blockquote>
@@ -683,7 +683,7 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 <blockquote class="blockquote">
-<p>Do some cab <strong>companies</strong> get more <strong>tips</strong> than others?</p>
+<p><strong><em>Do some cab companies get more tips than others?</em></strong></p>
 <blockquote class="blockquote">
 <ul>
 <li><p>Here, we see ‘Flash Cab’ gets the least amount of tips.</p></li>
@@ -709,7 +709,7 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 <blockquote class="blockquote">
-<p>Does a <strong>tip</strong> depend upon the <em>distance</em>, <em>hour of the day</em>, <em>dow</em> and <em>month</em> ?</p>
+<p><strong><em>Does a tip depend upon the distance, hour of the day, dow and month ?</em></strong></p>
 <blockquote class="blockquote">
 <ul>
 <li><p>By hour :</p>
@@ -745,12 +745,14 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 </div>
+<blockquote class="blockquote">
 <ul>
 <li><p>By dow:</p>
 <ul>
 <li>Thursdays and Sundays get more tips.</li>
 </ul></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_bar</span>(<span class="sc">~</span>dow, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot C: Counts of Tips by Day of Week"</span>) <span class="sc">%&gt;%</span> </span>
@@ -777,12 +779,14 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 </div>
+<blockquote class="blockquote">
 <ul>
 <li><p>By month:</p>
 <ul>
 <li>April gets the most tips.</li>
 </ul></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_bar</span>(<span class="sc">~</span>month, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot D: Counts of Tips by Month"</span>) <span class="sc">%&gt;%</span> </span>
@@ -811,7 +815,7 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 <blockquote class="blockquote">
 <blockquote class="blockquote">
-<p>This plot gives inoformation on the tips collected on each day of each month.</p>
+<p>This plot gives information on the tips collected on each day of each month.</p>
 </blockquote>
 </blockquote>
 <div class="cell">
@@ -2691,6 +2695,9 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 453                1</code></pre>
 </div>
 </div>
+<blockquote class="blockquote">
+<p><strong>Graph for the substance that causes most addiction:</strong></p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>HELPrct <span class="sc">%&gt;%</span> <span class="fu">gf_bar</span>(<span class="sc">~</span>substance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -2701,7 +2708,14 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 </div>
-<p>Plotting based on sex:</p>
+<blockquote class="blockquote">
+<ul>
+<li><p>Plotting based on sex:</p>
+<ul>
+<li>This plot shows that males fight with addiction more compared to females.</li>
+</ul></li>
+</ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>HELPrct <span class="sc">%&gt;%</span> <span class="fu">gf_props</span>(<span class="sc">~</span>substance, <span class="at">fill =</span> <span class="sc">~</span>sex) <span class="sc">%&gt;%</span> </span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"violet"</span>, <span class="st">"pink"</span>))) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2728,6 +2742,9 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 </div>
+<blockquote class="blockquote">
+<p>This graph shows that the substance that causes the most addiction is alcohol, then cocaine and then heroin. And addiction is more in males.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_props</span>(<span class="sc">~</span>substance,</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> mosaicData<span class="sc">::</span>HELPrct, <span class="at">fill =</span> <span class="sc">~</span>sex,</span>
@@ -2743,6 +2760,9 @@ $ hour     &lt;fct&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 </div>
+<blockquote class="blockquote">
+<p>We can see more accurate graph for the same using gf_percentage, to see the percentage differences.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_percents</span>(<span class="sc">~</span>substance,</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> mosaicData<span class="sc">::</span>HELPrct, <span class="at">fill =</span> <span class="sc">~</span>sex,</span>

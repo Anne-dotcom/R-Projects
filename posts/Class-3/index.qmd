@@ -65,7 +65,7 @@ taxi_modified <- taxi %>%
 glimpse(taxi_modified)
 ```
 
-> Do more people **tip** than not?
+> ***Do more people tip than not?***
 >
 > > People do tip more.
 
@@ -76,7 +76,7 @@ gf_bar(~tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 1A: Counts of Tips")
 ```
 
-> Does the **tip** depend upon whether the trip is **local** or not?
+> ***Does the tip depend upon whether the trip is local or not?***
 >
 > > Yes, the depends on whether the ride was local or not.
 
@@ -139,7 +139,7 @@ taxi_modified %>%
   gf_refine(scale_fill_manual(values = c("powderblue", "pink")))
 ```
 
-> Do some cab **companies** get more **tips** than others?
+> ***Do some cab companies get more tips than others?***
 >
 > > -   Here, we see 'Flash Cab' gets the least amount of tips.
 > >
@@ -156,7 +156,7 @@ taxi_modified %>%
  gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
-> Does a **tip** depend upon the *distance*, *hour of the day*, *dow* and *month* ?
+> ***Does a tip depend upon the distance, hour of the day, dow and month ?***
 >
 > > -   By hour :
 > >
@@ -177,9 +177,9 @@ gf_bar(~hour, fill = ~tip,
   gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
--   By dow:
-
-    -   Thursdays and Sundays get more tips.
+> -   By dow:
+>
+>     -   Thursdays and Sundays get more tips.
 
 ```{r}
 gf_bar(~dow, fill = ~tip, data = taxi_modified) %>%
@@ -195,9 +195,9 @@ gf_bar(~dow, fill = ~tip,
   gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
--   By month:
-
-    -   April gets the most tips.
+> -   By month:
+>
+>     -   April gets the most tips.
 
 ```{r}
 gf_bar(~month, fill = ~tip, data = taxi_modified) %>%
@@ -213,7 +213,7 @@ gf_bar(~month, fill = ~tip,
 gf_refine(scale_fill_manual(values = c("violet", "pink"))) 
 ```
 
-> > This plot gives inoformation on the tips collected on each day of each month.
+> > This plot gives information on the tips collected on each day of each month.
 
 ```{r}
 gf_bar(~ month | dow, fill = ~tip, data = taxi_modified) %>%
@@ -253,11 +253,15 @@ data("HELPrct")
 HELPrct
 ```
 
+> **Graph for the substance that causes most addiction:**
+
 ```{r}
 HELPrct %>% gf_bar(~substance)
 ```
 
-Plotting based on sex:
+> -   Plotting based on sex:
+>
+>     -   This plot shows that males fight with addiction more compared to females.
 
 ```{r}
 HELPrct %>% gf_props(~substance, fill = ~sex) %>% 
@@ -273,6 +277,8 @@ gf_props(~substance,
    gf_refine(scale_fill_manual(values = c("violet", "pink")))
 ```
 
+> This graph shows that the substance that causes the most addiction is alcohol, then cocaine and then heroin. And addiction is more in males.
+
 ```{r}
 gf_props(~substance,
   data = mosaicData::HELPrct, fill = ~sex,
@@ -281,6 +287,8 @@ gf_props(~substance,
   gf_labs(title = "Plotting Proportions using gf_props") %>% 
     gf_refine(scale_fill_manual(values = c("violet", "pink")))
 ```
+
+> We can see more accurate graph for the same using gf_percentage, to see the percentage differences.
 
 ```{r}
 gf_percents(~substance,
