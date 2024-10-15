@@ -308,7 +308,7 @@ gf_percents(~substance,
 
 ## "Your Turn"
 
-## Data set 1 - *Banned books* 
+## Data set 1 - *Banned books*
 
 -   I have chosen to work on the 'banned' data set (banned books) from 'Counts'.
 

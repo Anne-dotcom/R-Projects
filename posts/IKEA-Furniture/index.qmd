@@ -1,0 +1,219 @@
+---
+title: "A2(Part-1)"
+author: "Anusha"
+---
+
+# "IKEA Furniture"
+
+# Introduction
+
+I have chosen the 'Ikea Furniture' data set.
+
+First, let's take a look at the data set provided. To do this we need to do a basic set up.
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(mosaic)
+library(skimr)
+library(ggformula)
+library(ggridges)
+# devtools::install_github('cttobin/ggthemr')
+library(ggthemr)
+library(ggsci)
+library(readr)
+library(scales)
+# Theming
+# ggthemr_reset()
+# ggthemr::ggthemr("fresh")
+```
+
+Next, let us read this file:
+
+```{r}
+ikea <- read.csv(file = "../../Data/ikea-modified.csv", sep = ";", header = TRUE)
+ikea
+```
+
+```{r}
+# Load necessary library
+library(dplyr)
+
+# Load your dataset
+ikea2 <- read.csv(file = "../../Data/ikea-modified.csv", sep = ";", header = TRUE, stringsAsFactors = FALSE)
+
+# Replace commas with periods and convert to numeric using dplyr
+ikea2 <- ikea2 %>%
+  mutate(across(c(price, price_usd), 
+                 ~ as.numeric(gsub(",", ".", .))))
+
+# Check the structure again to confirm the changes
+str(ikea2)
+
+
+
+```
+
+```{r}
+glimpse(ikea2)
+```
+
+```{r}
+skim(ikea2)
+```
+
+```{r}
+inspect(ikea2)
+```
+
+### **Data Dictionary:**
+
+**Quantitative Data:\~**
+
+-   item_id
+
+-   depth
+
+-   height
+
+-   width
+
+-   category_total
+
+-   price
+
+-   price_usd
+
+**Qualitative Data:\~**
+
+-   name
+
+-   category
+
+-   sellable_online
+
+-   old_price
+
+-   link
+
+-   other_colors
+
+-   short_description
+
+-   designer
+
+    **Insights:\~**
+
+-   This is a data set has 3211 rows and 15 columns.
+
+-   There are some missing data in depth, height and width columns.\
+
+### Define Target variable and Predictor Variables
+
+-   **Target variable:** Price
+
+-   **Predictor variables:** Category ( furniture category on the y axis)
+
+-   Also, 'other_colors' indicates if a certain furniture in the category is available in other colors or not.
+
+### Plotting the graph
+
+```{r}
+str(ikea2)
+```
+
+```{r}
+ikea2 <- ikea2 %>%
+  mutate(price = as.numeric(gsub(",", "", price)))  # Remove commas and convert to numeric
+
+```
+
+### What could be the Research experiment that might have been conducted to obtain this data?
+
+This research aims to understand consumer preferences and pricing strategies across different product categories in a retail environment, such as IKEA.
+
+To analyze the relationship between product prices, their categories, and the availability of alternative color options, designers, sell-ability online, etc.
+
+The experiment:
+
+-   Identify a range of products from IKEA across various categories.
+
+-   Ensure a balanced representation of product types to provide a comprehensive dataset.
+
+-   In-Store Observation, surveys
+
+-   Selling price of each product in USD.
+
+-   Remove any duplicate entries and handle missing values appropriately.
+
+-   Convert categorical variables into a suitable format for analysis
+
+-   Create visual representations of the data.
+
+-   Analyze the results to draw conclusions about consumer behavior and pricing strategies.
+
+### Questions
+
+**Questions the below graph seeks to answer**
+
+1.  How much do items in each IKEA category cost?
+2.  Are they available in other colors?
+3.  Does cost increase if they are available in different colors or not?
+4.  Is there a correlation between the availability of additional colors and the price of products?
+
+```{r}
+ggplot(ikea2, aes(x = price, y = category, fill = other_colors)) +
+  geom_density_ridges(alpha = 0.7, scale = 1) +
+  scale_x_log10(labels = scales::dollar) +
+  labs(x = "Price (USD)", y = "", fill = "Are they available in other colors?")
+```
+
+To explain the code above:
+
+-   ggplot initializes a plot for the ikea2 data set.
+
+-   aes(x = price, y = category, fill = other_colors) defines the aestheic mapping. Price is mapped to x-axis, category is mapped to y-axis and is filled by other_colors, i.e if furniture in 'category' is available is different colors or not.
+
+-   geom_density_ridges, creates denisty ridges to the plot.
+
+-   scale_x_log10, transforms the x-axis into a logarithmic scale.
+
+-   labs, labels/names the plot.
+
+I have used ggplot instead of ggformula, as the code for ggformula is not working. I tried a lot of ways to make it work , but since it was not giving me a plot, I decided to stick with ggplot. But, below, I have provided a code using ggformula.
+
+Code with ggformula:
+
+```{r}
+#gf_density_ridges(price ~ category,
+#                  fill = ~ other_colors,
+#                  alpha = 0.7,
+#                  rel_min_height = 0.005,
+#                  data = ikea2) %>%
+#  gf_refine(scale_x_log10(labels = dollar_format()),  # Log scale with dollar formatting
+#            scale_y_discrete(expand = c(0.01, 0))) %>%
+#  gf_labs(
+#    title = "Price Distribution by Category", 
+#    x = "Price (USD)",
+#    y = "",
+#    fill = "Are they available in other colors?"
+#  )
+```
+
+#### What kind of graph is this?
+
+This is a 'Density Plot'.
+
+#### What can you say about the scale on X-axis?
+
+Since this data spans several orders of magnitude, we need a clearer visualization of both small and large values. This is why, we convert the x-axis into a logarithmic scale.
+
+#### What can you say about prices of items that are available in *single colour* versus those that are available in more than one colour?
+
+The above plot says that there is a higher proportion of TV & media furniture with single-color, and lowest proportion of Chairs in single-color items.
+
+#### What is a good hypothesis to interpret the double-humped nature of some of the curves?
+
+-   Maybe, a good hypothesis could be that, there are two segments/groups of people who have different purchasing preference or power. Explained further below:
+
+    -   The presence of two peaks suggests that the category is attracting two different types of consumers—those who are budget conscious and looking for lower priced products, and those willing to invest in premium or high end products.

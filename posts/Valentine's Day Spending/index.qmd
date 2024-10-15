@@ -1,0 +1,202 @@
+---
+title: "A2(Part-2)"
+author: "Anusha"
+---
+
+# "Valentine's Day Spending"
+
+# Introduction
+
+I have chosen the 'Valentine's Day Spending' data set.
+
+First, let's take a look at the data set provided. To do this we need to do a basic set up.
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(mosaic)
+library(skimr)
+library(ggformula)
+library(ggprism)
+```
+
+Next, let us read this file:
+
+```{r}
+gifts_age <- read_delim("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-02-13/gifts_age.csv", delim = ",")
+gifts_age
+```
+
+```{r}
+glimpse(gifts_age)
+```
+
+```{r}
+inspect(gifts_age)
+```
+
+According to the glimpse, Age is currently a \<chr\>. Since it has only 6 levels (according to inspect), we convert it onto a factor.
+
+```{r}
+valentines <- gifts_age %>% 
+  mutate(
+    Age = as_factor(Age)
+  )
+inspect(valentines)
+```
+
+**Qualitative Data:\~**
+
+-   Age
+
+**Quantitative Data:\~**
+
+-   SpendingCelebrating
+
+-   Candy
+
+-   Flowers
+
+-   Jewelry
+
+-   GreetingCards
+
+-   EveningOut
+
+-   Clothing
+
+-   GiftCards
+
+**Insights:\~**
+
+-   this data set has 6 rows and 9 columns.
+
+### Define Target variable and Predictor Variables
+
+-   **Target variable:** Amount spent per gift
+
+-   **Predictor variables:** Age Group
+
+### What could be the Research experiment that might have been conducted to obtain this data?
+
+The main aim of the study would be to understand how much different age groups spend on various types of gifts for Valentine's Day. This can help businesses tailor their marketing strategies and product offerings based on consumer behavior.
+
+How could it have been conducted?
+
+-   A structured questionnaire could be designed to collect data on spending habits for Valentine's Day gifts.
+
+-   The target population would include individuals who celebrate Valentine's Day across various age groups.
+
+-   Once the data is collected, it could be analyzed to identify trends and patterns in spending behavior.
+
+-   The resulting data from this research experiment would provide valuable insights into consumer behavior during Valentine's Day.
+
+### Plotting the graph
+
+```{r}
+# library(ggformula)
+
+# valentines_data <- data.frame(
+#   Age = factor(c("18-24", "25-34", "35-44", "45-54", "55-64", "65+")),
+#   SpendingCelebrating = c(51, 40, 31, 19, 18, 13),
+#   item = c("Candy", "Flowers", "Jewelry", "GreetingCards", "EveningOut", "Clothing", "GiftCards"),
+#   spending = c(70, 50, 33, 33, 41, 33, 23)
+# )
+
+# gf_line(spending ~ Age, 
+#         color = ~ item, 
+#         group = ~ item, 
+#         data = valentines_data) %>%
+#   gf_point(spending ~ Age, 
+#            color = ~ item, 
+#            shape = ~ item, 
+#            size = 3, 
+#            data = valentines_data) %>%
+#   gf_labs(x = "Age Group", 
+#           y = "Amount Spent on Gifts", 
+#           title = "Valentine's Day Spending by Age and Gift Type", 
+#           color = "Gift Type", 
+#           shape = "Gift Type") +
+#   theme_minimal() + 
+#   theme(legend.position = "right")
+
+
+```
+
+### Questions
+
+**Questions the below graph seeks to answer**
+
+1.  How does Valentine's Day spending vary across different age groups and gift categories?
+2.  Which age group spends the most on Valentine's Day?
+3.  Which age group spends the least on Valentine's day?
+4.  Are there any noticeable trends in spending patterns as age increases?
+
+```{r}
+library(ggformula)
+
+# Correct data: Each age group has a corresponding spending value for each item.
+valentines_data <- data.frame(
+  Age = factor(rep(c("18-24", "25-34", "35-44", "45-54", "55-64", "65+"), each = 7)),
+  SpendingCelebrating = rep(c(51, 40, 31, 19, 18, 13), each = 7),
+  item = rep(c("Candy", "Flowers", "Jewelry", "GreetingCards", "EveningOut", "Clothing", "GiftCards"), times = 6),
+  spending = c(70, 50, 33, 33, 41, 33, 23,  # 18-24
+               62, 44, 34, 33, 37, 27, 19,  # 25-34
+               58, 41, 29, 42, 30, 26, 22,  # 35-44
+               60, 37, 20, 42, 31, 20, 23,  # 45-54
+               50, 32, 13, 43, 29, 19, 20,  # 55-64
+               42, 25, 8, 44, 24, 12, 20))  # 65+
+
+
+# Line and scatter plot using gf_line and gf_point
+valentines_data %>%
+  gf_line(spending ~ Age, 
+          color = ~ item, 
+          group = ~ item) %>%
+  gf_point(spending ~ Age, 
+           color = ~ item, 
+           shape = ~ item, 
+           size = 3) %>%
+  gf_labs(x = "Age Group in Years", 
+          y = "Amount Spent on Gifts", 
+          title = "Valentine's Day Spending by Age and Gift Type", 
+          color = "Gift Type", 
+          shape = "Gift Type") +
+ #theme_minimal() +
+  theme(legend.position = "right")
+
+```
+
+To explain the code above:
+
+-   data.frame creates a data frame in R, a table-like structure for organizing data.
+
+    -   Why to use data.frame and rep?
+
+    -   Even if it looks complicated, we need to do this since the number of objects in the required columns are not equal.
+
+    -   The data.frame function helps organize data into a tabular structure with equal-length columns. When some columns have fewer elements, we use the rep function to ensure that all columns have the same number of objects.
+
+-   The rep function is used to repeat the age groups ("18-14", "25-34", etc.) seven times each (indicating that each age group has spending data for seven different items).
+
+-   SpendingCelebrating contains values (51, 40, 31, 19, 18, 13) repeated seven times each, representing a fixed amount for each age group.
+
+-   Item represents the types of gifts. The rep function repeats this list of items six times, which corresponds to the six age groups.
+
+-   Spending column holds he actual spending amounts for each gift item within each age group.
+
+-   gf_line initializes a line plot. The age group is on the x-axis and y-axis has the amount spent on gifts.
+
+-   gf_plot initializes a scatter plot, with the same x and y-axis.
+
+-   gf_lab helps to label the plot.
+
+-   theme(legend.position = "right") sets the legend on the right of the plot.
+
+#### What might be the Hypothesis / Research Question, based on the Chart?
+
+-   There are significant differences in the amount spent on Valentine's Day gifts across different age groups.
+
+<!-- -->
+
+-   Different age groups have distinct preferences for gift items on Valentine's Day.

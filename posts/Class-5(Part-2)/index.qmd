@@ -1,0 +1,254 @@
+---
+title: "Class-5(Change)"
+author: "Anusha"
+date: "10-10-24"
+---
+
+# Class-5 (Change)
+
+# Part two
+
+## Introduction
+
+*The second module for today is Change. 'Change' is used to find some association between variables.*
+
+-   In this section, we are going to plot a quant v/s quant.
+
+-   To do this we need to understand something called 'Correlation'.
+
+```{r}
+#| label: setup
+library(tidyverse) # Tidy data processing and plotting
+library(ggformula) # Formula based plots
+library(mosaic) # Our go-to package
+library(skimr) # Another Data inspection package
+library(kableExtra) # Making good tables with data
+
+library(GGally) # Corr plots
+library(corrplot) # More corrplots
+library(ggExtra) # Making Combination Plots
+
+# devtools::install_github("rpruim/Lock5withR")
+library(Lock5withR) # Datasets
+library(palmerpenguins) # A famous dataset
+
+library(easystats) # Easy Statistical Analysis and Charts
+library(correlation) # Different Types of Correlations
+# From the easystats collection of packages
+```
+
+#### What is 'Correlation'?
+
+-   In statistical terms, we use correlation to denote association between two quant variables.
+
+-   Usually, this association is linear, as in if there is a unit increase/decrease in x, there will be a unit increase/decrease in y. This doesn't necessarily have to be directly proportional.
+
+-   There is another technique called 'regression', which is used to estimate the best straight line to summarize the association between the variables.
+
+-   The degree of association is measured by a correlation coefficient. This is measured using Z scores.
+
+    -   This is done by multiplying the Z score of the x variable to the Z score of the y variable and dividing them by their standard deviation and then averaging it out.
+
+```{r}
+HollywoodMovies2011 -> movies
+glimpse(movies)
+```
+
+```{r}
+skim(movies)
+```
+
+```{r}
+inspect(movies)
+```
+
+### Scatter Plots
+
+```{r}
+movies %>%
+  gf_point(DomesticGross ~ WorldGross) %>%
+  gf_lm() %>%
+  gf_labs(
+    title = "Scatter Plot",
+    subtitle = "Movie Gross Earnings: Domestics vs World"
+  )
+```
+
+```{r}
+movies %>%
+  gf_point(Profitability ~ OpeningWeekend) %>%
+  gf_lm() %>%
+  gf_labs(
+    title = "Scatter Plot",
+    subtitle = "Movies: Does Opening Week Earnings indicate Profitability?"
+  )
+```
+
+```{r}
+movies %>%
+  gf_point(RottenTomatoes ~ AudienceScore) %>%
+  gf_lm() %>%
+  gf_labs(
+    title = "Scatter Plot",
+    subtitle = "Movie Ratings: Tomatoes vs Audience"
+  )
+```
+
+```{r}
+movies %>%
+  drop_na() %>%
+  gf_point(RottenTomatoes ~ AudienceScore,
+    color = ~Genre
+  ) %>%
+  gf_lm() %>%
+  gf_labs(
+    title = "Scatter Plot",
+    subtitle = "Movie Ratings: Trends by Genre"
+  )
+```
+
+### Quantizing Correlation
+
+'GGally::ggpairs' provides:
+
+-   two different comparisons of each pair of columns
+
+-   displays either the density or count of the respective variable along the diagonal. 
+
+-   With different parameter settings, the diagonal can be replaced with the axis values and variable labels.
+
+```{r}
+GGally::ggpairs(
+  movies %>% drop_na(),
+  # Select Quant variables only for now
+  columns = c(
+    "RottenTomatoes", "AudienceScore", "DomesticGross", "ForeignGross"
+  ),
+  switch = "both",
+  # axis labels in more traditional locations(left and bottom)
+
+  progress = FALSE,
+  # no compute progress messages needed
+
+  # Choose the diagonal graphs (always single variable! Think!)
+  diag = list(continuous = "barDiag"),
+  # choosing histogram,not density
+
+  # Choose lower triangle graphs, two-variable graphs
+  lower = list(continuous = wrap("smooth", alpha = 0.3, se = FALSE)),
+  title = "Movies Data Correlations Plot #1"
+)
+```
+
+```{r}
+GGally::ggpairs(
+  movies %>% drop_na(),
+  # Select Quant variables only for now
+  columns = c(
+    "Budget", "Profitability", "DomesticGross", "ForeignGross"
+  ),
+  switch = "both",
+  # axis labels in more traditional locations(left and bottom)
+
+  progress = FALSE,
+  # no compute progress messages needed
+
+  # Choose the diagonal graphs (always single variable! Think!)
+  diag = list(continuous = "barDiag"),
+  # choosing histogram,not density
+
+  # Choose lower triangle graphs, two-variable graphs
+  lower = list(continuous = wrap("smooth", alpha = 0.3, se = FALSE)),
+  title = "Movies Data Correlations Plot #2"
+)
+```
+
+#### Doing a Correlation test
+
+We use this code to obtain correlation scores.
+
+```{r}
+mosaic::cor_test(Profitability ~ Budget, data = movies) %>%
+  broom::tidy() %>%
+  knitr::kable(
+    digits = 2,
+    caption = "Movie Profitability vs Budget"
+  )
+```
+
+```{r}
+mosaic::cor_test(DomesticGross ~ Budget, data = movies) %>%
+  broom::tidy() %>%
+  knitr::kable(
+    digits = 2,
+    caption = "Movie Domestic Gross vs Budget"
+  )
+```
+
+```{r}
+mosaic::cor_test(ForeignGross ~ Budget, data = movies) %>%
+  broom::tidy() %>%
+  knitr::kable(
+    digits = 2,
+    caption = "Movie Foreign Gross vs Budget"
+  )
+```
+
+### ErrorBar Plots for Correlation
+
+```{r}
+glimpse(mtcars)
+```
+
+```{r}
+cor <- correlation::correlation(mtcars)
+cor
+```
+
+```{r}
+cor %>%
+  # Filter for target variable `mpg` and plot
+  filter(Parameter1 == "mpg") %>%
+  gf_point(r ~ reorder(Parameter2, r), size = 4) %>%
+  gf_errorbar(CI_low + CI_high ~ reorder(Parameter2, r),
+    width = 0.5
+  ) %>%
+  gf_hline(yintercept = 0, color = "grey", linewidth = 2) %>%
+  gf_labs(
+    title = "Correlation Errorbar Chart",
+    subtitle = "Target variable: mpg",
+    x = "Predictor Variable",
+    y = "Correlation Score with mpg"
+  )
+```
+
+### New Combination Plot
+
+#### Data set - Penguins
+
+```{r}
+penguins
+```
+
+```{r}
+library(ggExtra)
+
+penguins %>%
+  drop_na() %>%
+  gf_point(body_mass_g ~ flipper_length_mm, colour = ~species) %>%
+  gf_smooth(method = "lm") %>%
+  gf_refine(scale_colour_brewer(palette = "Accent")) %>%
+  gf_labs(title = "Scatter Plot with Marginal Densities") %>%
+  ggExtra::ggMarginal(
+    type = "density", groupColour = TRUE,
+    groupFill = TRUE, margins = "both"
+  )
+```
+
+-   From this plot, we infer that when the body mass increases, the flipper length also increases.
+
+    -   So, the Gento species have a higher body mass with a longer flipper length.
+
+-   We can also see that there is a positive correlation due to the straight line for each species in the graph.
+
+-   We also notice, that the Gento and the Chinstrip species is skewed. The Adelie species are kind of symmetrical.
