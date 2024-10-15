@@ -124,7 +124,7 @@ wages_clean %>%
 ```{r}
 wages_clean %>%
   gf_boxplot(educcat ~ log10(realrinc)) %>%
-  gf_labs(title = "Plot 3B: Log(Income) by Education Category") %>% 
+  gf_labs(title = "Plot 3B: Log(Income) by Education Category") 
 ```
 
 ```{r}
