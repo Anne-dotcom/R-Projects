@@ -163,7 +163,6 @@ valentines_data %>%
           title = "Valentine's Day Spending by Age and Gift Type", 
           color = "Gift Type", 
           shape = "Gift Type") +
- #theme_minimal() +
   theme(legend.position = "right")
 
 ```
@@ -197,7 +196,4 @@ To explain the code above:
 #### What might be the Hypothesis / Research Question, based on the Chart?
 
 -   There are significant differences in the amount spent on Valentine's Day gifts across different age groups.
-
-<!-- -->
-
 -   Different age groups have distinct preferences for gift items on Valentine's Day.

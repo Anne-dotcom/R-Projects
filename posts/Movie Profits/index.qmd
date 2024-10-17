@@ -1,0 +1,138 @@
+---
+title: "A2(Part-3)"
+author: "Anusha"
+order: 9
+---
+
+# "Movie Profits"
+
+# Introduction
+
+I have chosen the 'Ikea Furniture' data set.
+
+First, let's take a look at the data set provided. To do this we need to do a basic set up.
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(mosaic)
+library(skimr)
+library(ggformula)
+```
+
+Next, let us read this file:
+
+```{r}
+movie <- read.csv(file = "../../Data/movie_profit.csv", sep = ";")
+movie
+```
+
+```{r}
+movie2 <- movie %>% 
+  mutate(
+    release_date = as_date(release_date),
+    production_budget = as.double(production_budget),
+    domestic_gross = as.double(domestic_gross),
+    worldwide_gross = as.double(worldwide_gross),
+    distributor = as_factor(distributor),
+    profit_ratio = as.double(gsub(",", "", profit_ratio)),
+    decade = as.double(decade)
+  )
+glimpse(movie2)
+```
+
+```{r}
+skim(movie2)
+```
+
+```{r}
+inspect(movie2)
+```
+
+### **Data Dictionary:**
+
+**Quantitative Data:\~**
+
+-   production_budget
+
+-   domestic_gross
+
+-   worldwide_gross
+
+-   profit_ratio
+
+-   decade
+
+**Qualitative Data:\~**
+
+-   movie
+
+-   distributor
+
+-   mpaa_rating
+
+-   genre
+
+**Date variable:\~**
+
+-   release_date
+
+**Insights:\~**
+
+-   There are 3310 rows and 10 columns.
+
+### Define Target variable and Predictor Variables
+
+-   **Target variable:** Ratio of profits
+
+-   **Predictor variables:** Genre
+
+-   The graph is faceted by distributor.
+
+```{r}
+median_profit_data <- movie2 %>%
+  group_by(distributor, genre) %>%
+  summarize(median_profit_ratio = median(profit_ratio, na.rm = TRUE), .groups = "drop")
+
+```
+
+```{r}
+gf_bar(median_profit_ratio ~ genre, data = median_profit_data, fill = ~ genre) %>%
+  gf_facet_wrap(vars(distributor)) + # Facet by distributorgf_facet_wrap(vars(childs)) %>%
+  labs(x = "Median Profit Ratio", 
+       y = "Genre", 
+       title = "Profits made by Film Distributors", 
+       subtitle = "Ratio of Profits to Budgets") +
+  scale_x_continuous(limits = c(0, 3), breaks = seq(0, 3, by = 1))  # Set x-axis to 0-3 range
+
+```
+
+To explain the code above:
+
+-   gf_bar initializes the bar graph. In this line of code, we also define the x and y axis and how to fill it. y axis is median_profit_ratio, x axis is genre and we fill by genre.
+
+-   gf_facet_wrap facets the graph into 7 sub plots. We facet is by distributor.
+
+-   labs helps to give labels/title to our plot.
+
+-   scale_x_continuous defines how to scale the x axis. We want it to range from 0 to 3 and by 1.
+
+```{r}
+ggplot(movie2, aes(x = genre, y = profit_ratio)) +
+  facet_wrap(vars(distributor))+
+  stat_summary(fun = "median", geom = "bar") +
+  labs(title = "Profits made by film distributors", subtitle = "Ratio of profits to budgets", x = "Genre", y = "Median Profit Ratio")+  
+  coord_flip()
+```
+
+To explain the code above:
+
+-   ggplot initiliazes a graph. 'aes' is used to define what would constitute of the x and y axis.
+
+-   facet_wrap facets (divides) the graph into 7 graphs based on the distributor.
+
+-   stat_summary defines type of plot we need for our graph.
+
+-   labs helps to give labels/title to our plot.
+
+-   coord_flip flips the graph to represent it horizontally.
