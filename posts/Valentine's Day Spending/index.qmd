@@ -128,9 +128,13 @@ How could it have been conducted?
 **Questions the below graph seeks to answer**
 
 1.  How does Valentine's Day spending vary across different age groups and gift categories?
+    -   As age increases, spending decreases. Younger people usually like to spend more on Valentine's Day.
 2.  Which age group spends the most on Valentine's Day?
+    -   Ages 18-24 spend the most. Momentarily 35-44 also spend.
 3.  Which age group spends the least on Valentine's day?
+    -   Ages 65+
 4.  Are there any noticeable trends in spending patterns as age increases?
+    -   As age increases, spending decreases.
 
 ```{r}
 library(ggformula)

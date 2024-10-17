@@ -158,9 +158,13 @@ The experiment:
 **Questions the below graph seeks to answer**
 
 1.  How much do items in each IKEA category cost?
+    -   From 10 to 10,000 dollars and above
 2.  Are they available in other colors?
+    -   Some are available in other colors.
 3.  Does cost increase if they are available in different colors or not?
+    -   Cost does seem to increase, but very minuscule. For some items, price evidently increases as we see the blue ridge more on the right.
 4.  Is there a correlation between the availability of additional colors and the price of products?
+    -   Yes, for some items when colored items are available, price increases.
 
 ```{r}
 ggplot(ikea2, aes(x = price, y = category, fill = other_colors)) +
@@ -224,3 +228,5 @@ The above plot says that there is a higher proportion of TV & media furniture wi
 This data set gave me a lot of trouble from the start. I was not able to import it at all. But after all the efforts I put into trying to figure out what was wrong, I found out all I had to add was header = "TRUE".
 
 Plotting this graph did not take very long. But, again the ggformula code did not work for some reason and I had to code using ggplot again. I still put up the ggformula code. But, choosing this graph made me also learn how to use density plots and density ridges plot. It was an interesting experience to try and learn something completely unknown without any guidance, but it worked out well for me. Even though the plot might not be completely the same, but I would say that I got 97% close to it and I was able to make adequate inferences from the data set and the graph.
+
+On another note, it reminded me about the time I went to IKEA for one of my classes. So, I also had some personal insights and thoughts on pricing of items based on color or not.
