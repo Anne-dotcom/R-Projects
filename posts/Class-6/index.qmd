@@ -8,18 +8,6 @@ author: "Anusha"
 ## Introduction
 
 ```{r}
-#| label: setup
-library(tidyverse) # Data Processing in R
-library(mosaic) # Our workhorse for stats, sampling
-library(skimr) # Good to Examine data
-library(ggformula) # Formula interface for graphs
-
-# load the NHANES data library
-library(NHANES)
-library(infer)
-```
-
-```{r}
 data("NHANES")
 glimpse(NHANES)
 ```
@@ -395,17 +383,6 @@ mean(~Height, data = sample_16) + 2.0 * se
 
 First, let's do our basic setup.
 
-```{r}
-#| label: setup
-library(tidyverse)
-library(mosaic)
-library(ggformula)
-library(infer)
-library(broom) # Clean test results in tibble form
-library(resampledata) # Datasets from Chihara and Hesterberg's book
-library(openintro) # More datasets
-```
-
 ## Case Study 1: Toy Data
 
 ```{r}
@@ -461,5 +438,17 @@ exam_grades
 ### Inspecting and Charting Data
 
 ```{r}
+# Install the packages if needed
+# install.packages("NHANES")
+# install.packages("infer")
+
+# Load libraries
+
+
+# Check if data is loaded correctly
+data(NHANES)
+
+# View a sample of the NHANES data
+head(NHANES)
 
 ```
