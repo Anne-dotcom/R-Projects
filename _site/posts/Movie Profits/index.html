@@ -10562,13 +10562,10 @@ quantitative variables:
 <p>How could it have been conducted?</p>
 <ul>
 <li>Gather a dataset of movies released over a specific time frame (e.g., last 5 years).</li>
-</ul>
-<!-- -->
-<ul>
-<li><p>For each movie, extract data on its production budget and box office revenue (or other revenue streams such as streaming, DVD sales, etc.). Then calculate the profit ratio.</p></li>
-<li><p>Define a time period for the study, such as movies released in the last 5 or 10 years, to keep the data manageable and relevant.</p></li>
-<li><p>Group the data by distributor and genre to calculate the median profit ratio for each combination. This allows for an analysis of how different distributors perform across genres.</p></li>
-<li><p>Examine the distribution of profit ratios to see if certain genres or distributors are generally more profitable.</p></li>
+<li>For each movie, extract data on its production budget and box office revenue (or other revenue streams such as streaming, DVD sales, etc.). Then calculate the profit ratio.</li>
+<li>Define a time period for the study, such as movies released in the last 5 or 10 years, to keep the data manageable and relevant.</li>
+<li>Group the data by distributor and genre to calculate the median profit ratio for each combination. This allows for an analysis of how different distributors perform across genres.</li>
+<li>Examine the distribution of profit ratios to see if certain genres or distributors are generally more profitable.</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>median_profit_data <span class="ot">&lt;-</span> movie2 <span class="sc">%&gt;%</span></span>
@@ -10616,6 +10613,24 @@ quantitative variables:
 </div>
 </div>
 </div>
+</section>
+<section id="questions" class="level3">
+<h3 class="anchored" data-anchor-id="questions">Questions</h3>
+<p><strong>Questions the below graph seeks to answer</strong></p>
+<ol type="1">
+<li>Which film genres are most profitable for each distributor?
+<ul>
+<li>Horror and Adventure</li>
+</ul></li>
+<li>How do the different distributors compare in terms of profitability across genres?
+<ul>
+<li><p>Warner Bros leads in profitability for ‘Horror’ and ‘Adventure’.</p></li>
+<li><p>Universal leads in profitability for ‘Comedy’, ‘Horror’ and ‘Adventure’.</p></li>
+<li><p>20th Century Fox stands out in ‘Comedy’, ‘Adventure’ and ‘Action’.</p></li>
+<li><p>NA stand out in ‘Action’.</p></li>
+</ul></li>
+<li>What is the median profit ratio for each genre across all distributors?</li>
+</ol>
 <p>To explain the code above:</p>
 <ul>
 <li><p>ggplot initializes a graph. ‘aes’ is used to define what would constitute of the x and y axis.</p></li>
