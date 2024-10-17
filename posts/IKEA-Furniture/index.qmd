@@ -130,6 +130,10 @@ ikea2 <- ikea2 %>%
 
 ```
 
+Here, gsub converts commas in the price column to an empty string, i.e, it removes the commas.
+
+And as.numeric converts into a numeric.
+
 ### What could be the Research experiment that might have been conducted to obtain this data?
 
 This research aims to understand consumer preferences and pricing strategies across different product categories in a retail environment, such as IKEA.
