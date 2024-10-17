@@ -13,7 +13,7 @@ website:
         href: https://twitter.com
 format:
   html:
-    theme: Journal
+    theme: flatly
     css: styles.css
     df_print: paged
 

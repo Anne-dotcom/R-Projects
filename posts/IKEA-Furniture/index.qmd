@@ -203,7 +203,7 @@ Code with ggformula:
 
 #### What kind of graph is this?
 
-This is a 'Density Plot'.
+This is a 'Density Plot'. More precisely it is a 'Density Ridges Plot'.
 
 #### What can you say about the scale on X-axis?
 
@@ -218,3 +218,9 @@ The above plot says that there is a higher proportion of TV & media furniture wi
 -   Maybe, a good hypothesis could be that, there are two segments/groups of people who have different purchasing preference or power. Explained further below:
 
     -   The presence of two peaks suggests that the category is attracting two different types of consumers—those who are budget conscious and looking for lower priced products, and those willing to invest in premium or high end products.
+
+### My Story
+
+This data set gave me a lot of trouble from the start. I was not able to import it at all. But after all the efforts I put into trying to figure out what was wrong, I found out all I had to add was header = "TRUE".
+
+Plotting this graph did not take very long. But, again the ggformula code did not work for some reason and I had to code using ggplot again. I still put up the ggformula code. But, choosing this graph made me also learn how to use density plots and density ridges plot. It was an interesting experience to try and learn something completely unknown without any guidance, but it worked out well for me. Even though the plot might not be completely the same, but I would say that I got 97% close to it and I was able to make adequate inferences from the data set and the graph.

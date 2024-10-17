@@ -118,7 +118,6 @@ How could it have been conducted?
 #           title = "Valentine's Day Spending by Age and Gift Type", 
 #           color = "Gift Type", 
 #           shape = "Gift Type") +
-#   theme_minimal() + 
 #   theme(legend.position = "right")
 
 
@@ -197,3 +196,9 @@ To explain the code above:
 
 -   There are significant differences in the amount spent on Valentine's Day gifts across different age groups.
 -   Different age groups have distinct preferences for gift items on Valentine's Day.
+
+### My Story
+
+Honestly, I chose this data set because it had a low reading time and it looks fairly simple to figure out. Little did I know it would be a lot harder than it seemed.
+
+The graph code was an issue and the first few codes I tried did not work at all. So, I kept trying to get the ggformula code to work. I did not want use ggplot, since what I had learnt properly was ggformula (gf_bar, gf_point, etc.). I kept tinkering with the code till I got the plotting code right. But it threw me an error. The number of objects in the required column were not equal. So, I had to find out the code for making the number objects equal which was quite an ordial to find. It took me while to understand how it worked. I also had figure out how to bring each of the gifts into a single column. This would make it easier for me to plot. Another new thing I learnt from this data set was how to use shapes. This is an interesting addition to the graph which helps us differentiate the points in the graphs and also makes it more visually appealing and understanding.

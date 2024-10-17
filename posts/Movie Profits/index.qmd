@@ -89,6 +89,24 @@ inspect(movie2)
 
 -   The graph is faceted by distributor.
 
+### What could be the Research experiment that might have been conducted to obtain this data?
+
+The data in question involves variables like distributor, genre and profit ratio These suggest that the research experiment was likely related to analyzing the financial performance of movies.
+
+How could it have been conducted?
+
+-   Gather a dataset of movies released over a specific time frame (e.g., last 5 years).
+
+<!-- -->
+
+-   For each movie, extract data on its production budget and box office revenue (or other revenue streams such as streaming, DVD sales, etc.). Then calculate the profit ratio.
+
+-   Define a time period for the study, such as movies released in the last 5 or 10 years, to keep the data manageable and relevant.
+
+-   Group the data by distributor and genre to calculate the median profit ratio for each combination. This allows for an analysis of how different distributors perform across genres.
+
+-   Examine the distribution of profit ratios to see if certain genres or distributors are generally more profitable.
+
 ```{r}
 median_profit_data <- movie2 %>%
   group_by(distributor, genre) %>%
@@ -96,14 +114,20 @@ median_profit_data <- movie2 %>%
 
 ```
 
-```{r}
-gf_bar(median_profit_ratio ~ genre, data = median_profit_data, fill = ~ genre) %>%
-  gf_facet_wrap(vars(distributor)) + # Facet by distributorgf_facet_wrap(vars(childs)) %>%
-  labs(x = "Median Profit Ratio", 
-       y = "Genre", 
-       title = "Profits made by Film Distributors", 
-       subtitle = "Ratio of Profits to Budgets") +
-  scale_x_continuous(limits = c(0, 3), breaks = seq(0, 3, by = 1))  # Set x-axis to 0-3 range
+I found out the median of profit_ratio by grouping by distributor and genre.
+
+Here, .groups = "drop" ensures that the grouping is removed when the summarization is done.
+
+### Plotting the Graph
+
+```{r eval=FALSE}
+#gf_bar(median_profit_ratio ~ genre, data = median_profit_data, fill = ~ genre) %>%
+ # gf_facet_wrap(vars(distributor)) + # Facet by distributor
+#  labs(x = "Median Profit Ratio", 
+#       y = "Genre", 
+#       title = "Profits made by Film Distributors", 
+#       subtitle = "Ratio of Profits to Budgets") +
+#  scale_x_continuous(limits = c(0, 3), breaks = seq(0, 3, by = 1))  # Set x-axis to 0-3 range
 
 ```
 
@@ -117,6 +141,10 @@ To explain the code above:
 
 -   scale_x_continuous defines how to scale the x axis. We want it to range from 0 to 3 and by 1.
 
+> I first tried to code using ggformula, but even on multiple tries, the plot did not appear in the required and appropriate way. When no option was left, I even tried to ask help from AI tools, but it still did not give me a solution that works.
+
+> So, I decided to try ggplot and it worked. The code for ggplot looks compact and easier to understand. It also makes the process of finding the median of variables very easy, it is a singular line of code.
+
 ```{r}
 ggplot(movie2, aes(x = genre, y = profit_ratio)) +
   facet_wrap(vars(distributor))+
@@ -127,12 +155,36 @@ ggplot(movie2, aes(x = genre, y = profit_ratio)) +
 
 To explain the code above:
 
--   ggplot initiliazes a graph. 'aes' is used to define what would constitute of the x and y axis.
+-   ggplot initializes a graph. 'aes' is used to define what would constitute of the x and y axis.
 
 -   facet_wrap facets (divides) the graph into 7 graphs based on the distributor.
 
--   stat_summary defines type of plot we need for our graph.
+-   stat_summary defines type of plot we need for our graph. fun = "median", summarizes the data by the median value of profit_ratio. geom = "bar" specifies that the summary should be represented as bar graphs.
 
 -   labs helps to give labels/title to our plot.
 
--   coord_flip flips the graph to represent it horizontally.
+-   coord_flip flips the graph to represent it horizontally. It switches the x and y axes.
+
+#### What kind of graph is this?
+
+This is a 'Bar Graph'.
+
+#### If you were to invest in movie production ventures, which are the two best genres that you might decide to invest in?
+
+I would invest in Horror or Adventure.
+
+#### Which R command might have been used to obtain the separate plots for each distributor?
+
+The R command 'facet_wrap' was sued to obtain the separate plots for each distributor.
+
+#### What might be the Hypothesis / Research Question, based on the Chart?
+
+-   There will be a significant interaction between genre and distributor, indicating that some distributors are particularly successful in specific genres, leading to higher profit ratios for those combinations.
+
+-   Certain genres will have significantly higher median profit ratios compared to others across all distributors.
+
+### My Story
+
+This was the final data set I worked on, so it took me slightly longer, which was not expected. I thought I would be able to finish this one quite quickly. But the code for the graph seemed to be chaining me from reaching the finale of this data set. I was hell bent on trying to make the ggformula method work, but it did not work no matter what I tried. So, finally I used the ggplot because this was the only code that worked.
+
+Apart from struggling with the graph a bit, I enjoyed the rest of the coding. I converted a variable into a date for the first time, along with converting it into a double. It was also interesting trying to calculate the median, whether it was the long way or the way we did the same within the ggplot code in a single line.
