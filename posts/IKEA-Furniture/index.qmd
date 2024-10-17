@@ -172,6 +172,18 @@ The experiment:
     -   Yes, for some items when colored items are available, price increases.
 
 ```{r}
+#gf_density_ridges(price ~ category, 
+#                  data = ikea2, 
+#                  fill = ~ other_colors, 
+#                  alpha = 0.7, 
+#                  scale = 1) %>%
+#  scale_x_log10(labels = scales::dollar) +  # Log scale for x-axis with dollar formatting
+#  labs(x = "Price (USD)", 
+#       y = "", 
+#       fill = "Are they available in other colors?") 
+```
+
+```{r}
 ggplot(ikea2, aes(x = price, y = category, fill = other_colors)) +
   geom_density_ridges(alpha = 0.7, scale = 1) +
   scale_x_log10(labels = scales::dollar) +
@@ -189,6 +201,8 @@ To explain the code above:
 -   scale_x_log10, transforms the x-axis into a logarithmic scale.
 
 -   labs, labels/names the plot.
+
+-   '+' and '%\>%' both are used to combine functions and operations, but '+' is used mostly in ggplot for adding layers or components to a plot.
 
 I have used ggplot instead of ggformula, as the code for ggformula is not working. I tried a lot of ways to make it work , but since it was not giving me a plot, I decided to stick with ggplot. But, below, I have provided a code using ggformula.
 
