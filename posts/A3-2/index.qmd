@@ -166,11 +166,11 @@ null_dist_money <-
                       Money_spent ~ shuffle(Gender))
 null_dist_money
 ###
-prop1(~ diffmean <= obs_diff_mean, data = null_dist_money)
+prop1(~ diffmean <= obs_mean, data = null_dist_money)
 ###
-gf_histogram(data = null_dist_tip2, ~ diffmean, 
+gf_histogram(data = null_dist_money, ~ diffmean, 
              bins = 25) %>%
-  gf_vline(xintercept = obs_diff_mean, 
+  gf_vline(xintercept = obs_mean, 
            colour = "purple", linewidth = 1,
            title = "Null Distribution by Permutation", 
            subtitle = "Histogram") %>% 
@@ -179,4 +179,6 @@ gf_histogram(data = null_dist_tip2, ~ diffmean,
 
 ## *Conclusion:*
 
-The line representing our observed difference in mean is located in the center of the null distribution, this suggests that the observed difference is quite common under the null hypothesis which states that there is no effect of gender on spending.
+The line representing our observed difference in mean is located in the centre of the null distribution, this suggests that the our null hypothesis is not true. There is nothing special in the diff mean we got. 
+We can reject the null hypothesis.
+There is not much difference in pocket money of males and females.
