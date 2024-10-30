@@ -1,0 +1,277 @@
+---
+title: "Inference for Comparing Two Paired Means"
+author: "Anusha"
+date: "10-18-24"
+---
+
+# Introduction
+
+## What is paired data?
+
+This module focuses on comparing data collected from the same set of individual categories. And in this case, we treat this data as paired since they correspond to the same set of observable entities.
+
+For working with this type of data, we would use the difference between the means of the two sets.
+
+Setting up the packages:
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(ggformula)
+library(mosaic)
+library(broom) # Tidy Test data
+library(resampledata3) # Datasets from Chihara and Hesterberg's book
+library(gt)
+library(patchwork) # Arranging Plots
+library(ggprism) # Interesting Categorical Axes
+library(supernova)# for tables
+```
+
+## Case Study 1: Results from a Diving Championship
+
+### Inspecting and Charting Data
+
+```{r}
+data("Diving2017", package = "resampledata3")
+Diving2017
+Diving2017_inspect <- inspect(Diving2017)
+Diving2017_inspect$categorical
+Diving2017_inspect$quantitative
+```
+
+Converting into long form:
+
+```{r}
+Diving2017_long <- Diving2017 %>%
+  pivot_longer(
+    cols = c(Final, Semifinal),
+    names_to = "race",
+    values_to = "scores"
+  )
+Diving2017_long
+```
+
+Histograms and Densities of the 2 variables:
+
+```{r}
+Diving2017_long %>%
+  gf_density(~scores,
+    fill = ~race,
+    alpha = 0.5,
+    title = "Diving Scores"
+  ) %>%
+  gf_facet_grid(~race) %>%
+  gf_fitdistr(dist = "dnorm")
+```
+
+```{r}
+Diving2017_long %>%
+  gf_col(
+    fct_reorder(Name, scores) ~ scores, #decreasing order of scores -> code is wrong(not ordered in decreasing order because of the long form of data set)
+    fill = ~race,
+    alpha = 0.5,
+    position = "dodge",
+    xlab = "Scores",
+    ylab = "Name",
+    title = "Diving Scores"
+  )
+```
+
+```{r}
+Diving2017_long %>%
+  gf_boxplot(
+    scores ~ race,
+    fill = ~race,
+    alpha = 0.5,
+    xlab = "Race",
+    ylab = "Scores",
+    title = "Diving Scores"
+  )
+```
+
+**Insights:**
+
+-   We can see that, the data is not normally distributed (not Gaussian).
+
+-   Even though the medians appear to be different, but since the box plots overlap, we cannot conclude that the means of the two race timings are different.
+
+## Check for Normality
+
+shapiro.wilk test checks whether a quant variable is from a normal distribution.
+
+Our Null Hypothesis is that the data is from a normal distribution.
+
+```{r}
+shapiro.test(Diving2017$Final)
+shapiro.test(Diving2017$Semifinal)
+```
+
+If p value is very small, it is not a normal distribution.
+
+If p value is large, it is a normal distribution.
+
+## Hypothesis
+
+-   Semi final mean = Final mean
+
+-   Semi final mean not = Final mean
+
+## Observed and Test Statistic
+
+```{r}
+obs_diff_swim <- diffmean(scores ~ race,
+  data = Diving2017_long,
+  only.2 = FALSE
+) # paired data
+
+# Can use this also
+# formula method is better for permutation test!
+# obs_diff_swim <- mean(~ (Final - Semifinal), data = Diving2017)
+
+obs_diff_swim
+```
+
+diffmean: Splits the score column into semifinal and final and get the difference in mean.
+
+only.2: take the data paired wise and not at random
+
+## Inference
+
+-   t-test:
+
+    -   This code shuffles the scores pair wise.
+
+    -   The polarity of differences are shuffled.
+
+```{r}
+mosaic::t.test(
+  x = Diving2017$Semifinal,
+  y = Diving2017$Final,
+  paired = TRUE, var.equal = FALSE
+) %>% broom::tidy()
+```
+
+#### 
+
+# **Comparing Multiple Means with ANOVA**
+
+Let is import and read this data set.
+
+```{r}
+frogs_orig <- read_csv("../../Data/frogs.csv")
+frogs_orig
+```
+
+### What is the research question?
+
+Based on the sample dataset at hand, how does frogspawn hatching time vary with different temperature settings?
+
+Response Variable: Hatching time
+
+Explanatory Variable : Temperatures
+
+## Clean the data
+
+```{r}
+frogs_orig %>%
+  pivot_longer(
+    .,
+    cols = starts_with("Temperature"),
+    cols_vary = "fastest",
+    # new in pivot_longer
+    names_to = "Temp",
+    values_to = "Time"
+  ) %>%
+  drop_na() %>%
+  ##
+  separate_wider_regex(
+    cols = Temp,
+    # knock off the unnecessary "Temperature" word
+    # Just keep the digits thereafter
+    patterns = c("Temperature", TempFac = "\\d+"),
+    cols_remove = TRUE
+  ) %>%
+  # Convert Temp into TempFac, a 3-level factor
+  mutate(TempFac = factor(
+    x = TempFac,
+    levels = c(13, 18, 25),
+    labels = c("13", "18", "25")
+  )) %>%
+  rename("Id" = `Frogspawn sample id`) -> frogs_long
+frogs_long
+##
+frogs_long %>% count(TempFac)
+```
+
+-   There are some columns with NA, since not all spawns (in each dish) can be subjected to different temperatures.
+
+-   We get all the temperatures into one single column. And this is converted into a factor.
+
+-   regex -\> regular expression
+
+### Plotting Graphs
+
+-   **Histogram**
+
+```{r}
+gf_histogram(~Time,
+  fill = ~TempFac,
+  data = frogs_long, alpha = 0.5
+) %>%
+  gf_vline(xintercept = ~ mean(Time)) %>%
+  gf_labs(
+    title = "Histograms of Hatching Time Distributions vs Temperature",
+    x = "Hatching Time", y = "Count"
+  ) %>%
+  gf_text(7 ~ (mean(Time) + 2),
+    label = "Overall Mean"
+  ) %>%
+  gf_refine(guides(fill = guide_legend(title = "Temperature level (°C)")))
+```
+
+-   **Box Plot**
+
+```{r}
+gf_boxplot(
+  data = frogs_long,
+  Time ~ TempFac,
+  fill = ~TempFac,
+  alpha = 0.5
+) %>%
+  gf_vline(xintercept = ~ mean(Time)) %>%
+  gf_labs(
+    title = "Boxplots of Hatching Time Distributions vs Temperature",
+    x = "Temperature", y = "Hatching Time",
+    caption = "Using ggprism"
+  ) %>%
+  gf_refine(
+    scale_x_discrete(guide = "prism_bracket"),
+    guides(fill = guide_legend(title = "Temperature level (°C)"))
+  )
+```
+
+Since, the histograms look well separated and the box plots show little overlap, we can say that Temperature has a significant effect on Hatching time.
+
+## Anova Test (Analysis Of Variance)
+
+This line of code, creates an ANOVA model object called frog_anova.
+
+```{r}
+frogs_anova <- aov(Time ~ TempFac, data = frogs_long)
+frogs_anova
+```
+
+We examine this using a package called 'supernova'.
+
+```{r}
+supernova::pairwise(frogs_anova,
+  correction = "Bonferroni", # Try "Tukey"
+  alpha = 0.05, # 95% CI calculation
+  var_equal = TRUE, # We'll see
+  plot = TRUE
+)
+```
+
+-   x-axis is the difference between means.
+
+-   The black points are the difference of means of each of the 3 groups -\> x-y

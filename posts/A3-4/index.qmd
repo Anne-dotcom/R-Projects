@@ -1,0 +1,208 @@
+---
+title: "Grades"
+author: "Anusha"
+---
+
+# **Art, Design, and Vocation are all diff-different.**
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(mosaic)
+library(skimr)
+library(ggformula)
+library(broom)
+library(crosstable)
+library(knitr)
+library(kableExtra)
+library(supernova)
+library(ggprism)
+library(patchwork)
+library(infer)
+```
+
+Let's first import and read our data set.
+
+```{r}
+grade <- read_csv("../../Data/grade.csv")
+grade
+```
+
+```{r}
+inspect(grade)
+```
+
+## Data Munging
+
+Here, we convert Degree, Course, Gender and Letter Grade as factors and them glimpse this modified data set.
+
+```{r}
+grade2 <- grade %>% 
+  mutate(
+    Degree = as_factor(Degree),
+    Course = as_factor(Course),
+    Gender = as_factor(Gender),
+    `Letter Grade` = as_factor(`Letter Grade`)
+  )
+glimpse(grade2)
+```
+
+## What is our NULL Hypothesis for this data set?
+
+**"Grades are very different between B.Voc, B.Cra, and B.Des folks."**
+
+To test our hypothesis, we will perform a series of steps. This will lead us to a conclusion regarding what we have stated.
+
+So, first we will find out the mean and standard deviation of Scores across the different degrees.
+
+```{r}
+grade2 %>% crosstable(Score~Degree) %>% as_flextable()
+```
+
+Students in the B.Des program tend to have slightly higher scores on average, with a wider range of scores, compared to students in B.Voc and BFA students have lower mean scores, and their scores show less variability than those of students in B.Des.
+
+This could potentially suggest different levels of consistency or performance across these degrees.
+
+## Histogram
+
+1\.
+
+```{r}
+gf_histogram(~Score, fill = ~Course, data = grade2) %>% 
+  gf_facet_wrap((vars(Degree))) %>% 
+  gf_labs(title = "Score Distribution by Degree and Course")
+```
+
+This graph suggests that B.Des students obtain relatively more higher scores than others. The other degree programs do not seem to obtain a perfect score of 10.
+
+2\.
+
+```{r}
+gf_histogram(~Score, fill = ~`Letter Grade`, data = grade2) %>% 
+  gf_facet_wrap((vars(Degree))) %>% 
+  gf_labs(title = "Which cartoon has the highest rating?")
+```
+
+This graph shows us that B.Des gets more A+ compared to the other degrees, as we also see with scores, which is correct since higher the scores, higher the letter grade.
+
+BFA gets the most A's and B+'s.
+
+B.Voc students do get more O's compared to others.
+
+At the extreme end, There are people in B.Des who got a P, but no one in the other two degrees have that grade.
+
+## ANOVA
+
+```{r}
+grade_anova <- aov(Score ~ Degree, data = grade2)
+grade_anova
+```
+
+The sum of squares for Degree compared to the residuals indicates that only a small portion of the total variability in Scores is explained by Degree. This suggests that while there may be some differences in scores across the degree programs, they don't explain a large amount of the total score variation.
+
+The residual standard error of 1.099 tells us that, on an average the actual scores differ from the predicted scores by about 1.099 units.
+
+```{r}
+supernova::pairwise(grade_anova,
+  correction = "Bonferroni", # Try "Tukey"
+  alpha = 0.05, # 95% CI calculation
+  var_equal = TRUE, 
+  plot = TRUE
+)
+```
+
+The plot displays confidence intervals for the differences in mean scores between pairs of degrees:
+
+-   ***B.Voc - B.Des***
+
+-   ***B.FA - B.Des***
+
+-   ***B.FA - B.Voc***
+
+Bonferroni correction makes the confidence intervals wider, providing more proper estimates of the differences.
+
+> **B.Voc - B.Des**: The confidence interval crosses 0, suggesting no significant difference in scores between *B.Voc* and *B.Des*.
+>
+> **B.FA - B.Des**: The confidence interval did not cross 0, indicating that there is some difference in scores between *B.FA* and *B.Des*.
+>
+> **B.FA - B.Voc**: The confidence interval did not cross 0, indicating that there is some difference in scores between *B.FA* and *B.Voc*.
+
+## Check for Normality
+
+```{r}
+shapiro.test(x = grade2$Score)
+```
+
+The distribution of grade2, is not normal since the p value is really small.
+
+We can check for each degree for more accurate conclusions:
+
+```{r}
+grade2 %>%
+  group_by(Degree) %>%
+  group_modify(~ .x %>%
+    select(Score) %>%
+    as_vector() %>%
+    shapiro.test() %>%
+    broom::tidy())
+```
+
+The p-value is extremely small, indicating that the scores in the B.Des group are not normal.
+
+The p-value is less, indicating that the scores in the B.Voc group are also not normal.
+
+Similar to the other 2 groups, the p-value is small suggesting that the scores in the B.FA group are not normal.
+
+```{r}
+grade2 %>%
+  as_tibble() %>%
+  gf_dhistogram(~Score, data = .) %>%
+  gf_fitdistr()
+```
+
+The scores appear to be spread across having several peaks, indicating that the data does not follow a normal distribution.
+
+The density curve provides an estimation of the data’s distribution.
+
+We also notice that the distribution is one that is skewed.
+
+## ANOVA using Permutation Test
+
+```{r}
+observed_infer <- grade2 %>%
+  specify(Score ~ Degree) %>%
+  hypothesise(null = "independence") %>%
+  calculate(stat = "F")
+observed_infer
+```
+
+F-statistic of 3.9 indicates that the variability in grades between the groups is greater than the variability within the groups.
+
+We perform the permutation for 4999 samples and calculate the F-stat for each of those samples.
+
+```{r}
+null_dist_infer <- grade2 %>%
+  specify(Score ~ Degree) %>%
+  hypothesise(null = "independence") %>%
+  generate(reps = 4999, type = "permute") %>%
+  calculate(stat = "F")
+##
+null_dist_infer
+```
+
+Once, we do this, we now want a visualization to provide a conclusion for our null hypothesis.
+
+```{r}
+null_dist_infer %>%
+  visualise(method = "simulation") +
+  shade_p_value(obs_stat = observed_infer$stat, direction = "right") +
+  scale_x_continuous(trans = "log10", expand = c(0, 0)) +
+  coord_cartesian(xlim = c(0.2, 500), clip = "off") +
+  annotation_logticks(outside = FALSE) 
+```
+
+## *Conclusion:*
+
+The observed test statistic for the Scores of B.Des, B.Voc and BFA is on the rightward tail end of the distribution but not entirely outside it. There may be some difference in Scores among the different degree programs but is not as strong.
+
+But since, the observed test statistic is still inside the distribution, we can reject our hypothesis and say that grades are not very different among B.Des, B.Voc and BFA.

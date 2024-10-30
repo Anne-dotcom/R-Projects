@@ -1,0 +1,243 @@
+---
+title: "Tips?"
+author: "Anusha"
+---
+
+# **I will eat my tip, thank you.**
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(mosaic)
+library(skimr)
+library(ggformula)
+library(broom)
+library(crosstable)
+library(knitr)
+library(kableExtra)
+```
+
+Let us import and read our data set.
+
+```{r}
+tip <- read_csv("../../Data/tipping.csv")
+tip
+```
+
+```{r}
+inspect(tip)
+```
+
+```{r}
+glimpse(tip)
+```
+
+## Data Munging
+
+We convert Preferance as a factor to make calculations easier.
+
+We are prepping our data for various test we are going to perform.
+
+```{r}
+tip2 <- tip %>% 
+  mutate(
+    Preferance = as_factor(Preferance)
+  )
+glimpse(tip2)
+```
+
+## 
+
+## What is our NULL Hypothesis for this data set?
+
+"**The average tip people give is higher for people who are non-vegetarians.**"
+
+**"Gender tends to affect the tipping."**
+
+To test our hypothesis, we will perform a series of steps. This will lead us to a conclusion regarding what we have stated.
+
+So, first we will find out the mean and standard deviation of tips across people with these 2 food preferences.
+
+## Mean and Standard Deviation
+
+```{r}
+tip_mean1 <- mosaic::mean(~Tip, data = tip2)
+tip_sd1 <- mosaic::sd(~Tip, data = tip2)
+tip_mean1
+tip_sd1
+```
+
+## Histograms
+
+1\.
+
+```{r}
+tip2 %>% gf_histogram(~Tip, fill = ~Preferance) %>% 
+ gf_facet_wrap(vars(Preferance)) %>% 
+  gf_labs(title = "Do people tip?")
+```
+
+According to the graph above, we see that there are more Vegetarians who don't tip compared to Non-vegetarians.
+
+2\.
+
+```{r}
+tip2 %>% gf_histogram(~Tip, fill = ~Gender) %>% 
+ gf_facet_wrap(vars(Gender)) %>% 
+  gf_labs(title = "Do people tip?")
+```
+
+We facet by gender to get another perspective into looking at the data set. Does gender also affect how people tip?
+
+Looks like females tip slightly more than males!
+
+3\.
+
+```{r}
+tip2 %>% gf_histogram(~Tip, fill = ~Preferance, position = "dodge") %>% 
+  gf_labs(title = "Do people tip?")
+```
+
+This graph helps us visualize the comparison between number of vegetarians and non-vegetarians who tip.
+
+Looks like, non-vegetarians tip more! But some vegetarians do tip Rs. 100!
+
+### Check for Normality
+
+```{r}
+tip2 %>% crosstable(Tip~Preferance) %>% as_flextable
+```
+
+Both groups have a median tip of 0 and similar inter quartile range (IQR) values, indicating that many people in both groups may not tip or give smaller amounts.
+
+The mean tip is slightly higher for vegetarians (12.3) compared to non-vegetarians (10.0), but with a higher standard deviation (21.9), suggesting more variability in the tipping behavior of vegetarians.
+
+-\>t-test:
+
+```{r}
+mosaic::t_test(Tip~Preferance, data = tip2, alternative = "greater") %>% 
+  broom::tidy()
+```
+
+This t-test tells us that Non-vegetarians tip 2.33 more than Vegetarians.
+
+the lower bound is −5.44 and the upper bound is Inf (infinity), reflecting a one-sided confidence interval due to the greater alternative hypothesis. The interval includes negative values, which means that there is no strong evidence that non-vegetarians tip more than vegetarians.
+
+Also, the p-value is greater than 0.05, so we cannot reject the null hypothesis.
+
+Difference in mean Tip between non-vegetarians and vegetarians is small and statistically insignificant.
+
+Since, there is such uncertainty in the t-tests we should perform some other tests.
+
+First, we shall check for normality using the shapiro test.
+
+```{r}
+tip_mean_nonveg <- mean(~Tip, data = subset(tip2, Preferance == "Non-veg"))
+tip_mean_veg <- mean(~Tip, data = subset(tip2, Preferance == "Veg"))
+tip_diff <- tip_mean_nonveg - tip_mean_veg
+tip_diff
+```
+
+-\>Shapiro test:
+
+```{r}
+tip2 %>% filter(Preferance == "Non-veg") %>% select(Tip) -> NonVeg
+tip2 %>% filter(Preferance == "Veg") %>% select(Tip) -> Veg
+NonVeg
+Veg
+```
+
+```{r}
+shapiro.test(NonVeg$Tip)
+shapiro.test(Veg$Tip)
+```
+
+These low p-values suggest that both distribution for non-veg and veg is not normal.
+
+Since, it is not normal, it is appropriate to conduct a Wilcox test for further analysis.
+
+-\>Wilcox Test:
+
+```{r}
+wilcox.test(Tip~Preferance, data = tip2,
+            alternative = "greater",
+            conf.int = TRUE,
+            conf.level = 0.95) %>% 
+  broom::tidy()
+```
+
+The results suggest that there is no significant difference between non-veg and veg people who tip.
+
+The p-value also suggests that we don't have sufficient data to reject the null hypothesis.
+
+Now, we can do a Permutation test to analyse and help us come to a conclusion.
+
+-\>Permutation:
+
+A permutation test is a non-parametric test used to determine if there is any significant difference between 2 or more groups. We can use this when t-tests or the wilcox test does not work.
+
+-   Preference
+
+```{r}
+obs_diff_mean <- diffmean(Tip ~ Preferance, data = tip2) 
+obs_diff_mean
+```
+
+As per previous calculations of the diff mean, here also we see that the difference of means is -2.333333.
+
+So, this means that non-veg tips 2.3 less than veg.
+
+```{r}
+null_dist_tip1 <- 
+  do(4999) * diffmean(data = tip2, 
+                      Tip ~ shuffle(Preferance))
+null_dist_tip1
+###
+prop1(~ diffmean <= obs_diff_mean, data = null_dist_tip1)
+###
+gf_histogram(data = null_dist_tip1, ~ diffmean, 
+             bins = 25) %>%
+  gf_vline(xintercept = obs_diff_mean, 
+           colour = "purple", linewidth = 1,
+           title = "Null Distribution by Permutation", 
+           subtitle = "Histogram") %>% 
+  gf_labs(x = "Difference in Means")
+###
+
+```
+
+## *Conclusion 1:*
+
+According to this graph, we see that the diff mean lies in the graph and not very far apart from the distribution. This suggests that there is nothing special about our mean.
+
+We can conclude that our null hypothesis is not true. Non-vegetarians do not tip more that Vegetarians.
+
+-   Gender:
+
+```{r}
+obs_diff_mean2 <- diffmean(Tip ~ Gender, data = tip2) 
+obs_diff_mean2
+```
+
+Now, we try to find out if there is a relation between gender and tipping. The difference in mean is -2.
+
+```{r}
+null_dist_tip2 <- 
+  do(4999) * diffmean(data = tip2, 
+                      Tip ~ shuffle(Gender))
+null_dist_tip2
+###
+prop1(~ diffmean <= obs_diff_mean2, data = null_dist_tip2)
+###
+gf_histogram(data = null_dist_tip2, ~ diffmean, 
+             bins = 25) %>%
+  gf_vline(xintercept = obs_diff_mean2, 
+           colour = "purple", linewidth = 1,
+           title = "Null Distribution by Permutation", 
+           subtitle = "Histogram") %>% 
+  gf_labs(x = "Difference in Means")
+```
+
+## *Conclusion 2:*
+
+According to this graph, our diff mean is not special and does not lie away from the distribution. This means that there is not affect of gender in how people tip.

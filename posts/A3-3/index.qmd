@@ -1,0 +1,230 @@
+---
+title: "Chhota-Bheem-Doraemon-Dragon-Tales"
+author: "Anusha"
+---
+
+# **Chhota Bheem vs Doraemon vs Dragon Tale**
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(mosaic)
+library(skimr)
+library(ggformula)
+library(broom)
+library(crosstable)
+library(knitr)
+library(kableExtra)
+library(supernova)
+library(ggprism)
+library(patchwork)
+library(infer)
+```
+
+Let's first import and read our data set.
+
+```{r}
+cartoon <- read_csv("../../Data/doraemon.csv")
+cartoon
+```
+
+```{r}
+inspect(cartoon)
+```
+
+```{r}
+glimpse(cartoon)
+```
+
+## Data Munging
+
+Let us convert Gender and Cartoon as a factor since we perform calculations on these variables.
+
+We are prepping our data for various test we are going to perform.
+
+```{r}
+cartoon2 <- cartoon %>% 
+  mutate(
+    Gender = as_factor(Gender),
+    Cartoon = as_factor(Cartoon)
+  )
+glimpse(cartoon2)
+```
+
+## What is our NULL Hypothesis for this data set?
+
+"**Doraemon \>\> Dragon Tales \>\> Chhota Bheem!"**
+
+To test our hypothesis, we will perform a series of steps. This will lead us to a conclusion regarding what we have stated.
+
+So, first we will find out the mean and standard deviation of money spent across the 2 genders.
+
+```{r}
+cartoon2 %>% crosstable(Rating~Cartoon) %>% as_flextable()
+```
+
+Dragon Tales has the highest mean of 7.3.
+
+The median ratings suggest that while Doraemon has a higher average, the median rating is similar to Dragon Tales indicating that most viewers rated both cartoons fairly similarly.
+
+Doraemon has the highest standard deviation of 2.3, indicating a wider range of ratings. This could mean that opinions on Doraemon vary significantly among viewers compared to the others.
+
+Chota Bheem has the lowest standard deviation of 1.5, suggesting that ratings for this cartoon are more clustered around the mean.
+
+## Histogram
+
+1.  A
+
+```{r}
+gf_histogram(~Rating, fill = ~Cartoon, data = cartoon2) %>% 
+  gf_facet_wrap(vars(Cartoon)) %>% 
+  gf_labs(title = "Which cartoon has the highest rating?")
+```
+
+1.  B
+
+```{r}
+gf_histogram(~Rating, fill = ~Cartoon, position = "dodge", data = cartoon2) %>% 
+  gf_labs(title = "Which cartoon has the highest rating?")
+```
+
+According to this visualization, seemingly Doraemon has higher ratings of 10, compared to the other 2 cartoons.
+
+```{r}
+gf_histogram(~Rating, fill = ~Gender, position = "dodge", data = cartoon2) %>% 
+  gf_facet_wrap(vars(Cartoon)) %>% 
+  gf_labs(title = "Does Gender play a role in these ratings?")
+```
+
+Both males and females gave more ratings of 10 to doraemon.
+
+```{r}
+gf_histogram(~Rating, fill = ~Cartoon, position = "dodge", data = cartoon2) %>% 
+  gf_facet_wrap(vars(Gender)) %>% 
+  gf_labs(title = "Does Gender play a role in these ratings?")
+```
+
+This graph tells us that males prefer Doraemon more than females, since they have given more ratings of 10 to it.
+
+## Box Plot
+
+```{r}
+gf_boxplot(
+  data = cartoon2,
+  Rating ~ Cartoon,
+  alpha = 0.5
+) %>%
+  gf_vline(xintercept = ~ mean(Rating)) %>%
+  gf_labs(
+    title = "Boxplots of Ratings vs Cartoon",
+    x = "Cartoon", y = "Rating",
+    caption = "Using ggprism"
+  ) %>%
+  gf_refine(
+    scale_x_discrete(guide = "prism_bracket"),
+    guides(fill = guide_legend(title = "Gender"))
+  )
+```
+
+The wider box of Doraemon shows that there more varied opinions about the cartoon. The higher median line also suggests that people have rated Doraemon more favourabley.
+
+Also since the boxes have significant overlap, the ratings don't vary that vastly.
+
+## ANOVA
+
+```{r}
+cartoon_anova <- aov(Rating ~ Cartoon, data = cartoon2)
+cartoon_anova
+```
+
+These results suggest that there are differences in the ratings of the cartoons. However, to determine whether these differences are significant, we conduct another test. To further explore these differences, we will conduct Bonferroni correction, to identify which specific cartoons differ from each other in terms of ratings.
+
+```{r}
+supernova::pairwise(cartoon_anova,
+  correction = "Bonferroni", # Try "Tukey"
+  alpha = 0.05, # 95% CI calculation
+  var_equal = TRUE, 
+  plot = TRUE
+)
+```
+
+This shows that Doraemon is rated differently than the other 2 cartoons.
+
+But since there seems to a lot of overlap, we cannot say that there is a significant difference of ratings between each cartoon.
+
+### Check for Normality
+
+```{r}
+shapiro.test(x = cartoon2$Rating)
+```
+
+Since, p value is really small, the distribution is not normal.
+
+```{r}
+cartoon2 %>%
+  group_by(Cartoon) %>%
+  group_modify(~ .x %>%
+    select(Rating) %>%
+    as_vector() %>%
+    shapiro.test() %>%
+    broom::tidy())
+```
+
+According to this test, the distribution for Chhota Bheem seems to be kind of normally distributed. But, the distribution for the other 2 cartoons is not normal because of the smaller p values.
+
+```{r}
+cartoon2 %>%
+  as_tibble() %>%
+  gf_dhistogram(~Rating, data = .) %>%
+  gf_fitdistr()
+```
+
+The ratings appear to be spread across with several peaks, indicating that the data may not follow a simple normal distribution. This seems right with the results of the Shapiro-Wilk test, which suggested that the data is not normally distributed.
+
+The density curve provides an estimation of the data’s distribution.
+
+## ANOVA using Permutation Test
+
+```{r}
+observed_infer <- cartoon2 %>%
+  specify(Rating ~ Cartoon) %>%
+  hypothesise(null = "independence") %>%
+  calculate(stat = "F")
+observed_infer
+```
+
+We have calculated the F stats for our cartoon2 distribution.
+
+The F-stat of 0.9 suggests that there is little to no difference in the means of the ratings of cartoons being compared.
+
+After this, we perform the permutation test.
+
+```{r}
+null_dist_infer <- cartoon2 %>%
+  specify(Rating ~ Cartoon) %>%
+  hypothesise(null = "independence") %>%
+  generate(reps = 4999, type = "permute") %>%
+  calculate(stat = "F")
+##
+null_dist_infer
+```
+
+This null distribution allows us to evaluate the stance of the F-stat value. By comparing the observed F-stat to this null distribution, we can assess how unusual or extreme it is.
+
+The distribution across all 4,999 samples show the overall spread of F-values under the null hypothesis.
+
+```{r}
+##
+null_dist_infer %>%
+  visualise(method = "simulation") +
+  shade_p_value(obs_stat = observed_infer$stat, direction = "right") +
+  scale_x_continuous(trans = "log10", expand = c(0, 0)) +
+  coord_cartesian(xlim = c(0.2, 500), clip = "off") +
+  annotation_logticks(outside = FALSE) 
+```
+
+## *Conclusion:*
+
+The observed test statistic for the ratings of *Doraemon*, *Chhota Bheem*, and *Dragon Tales* is on the rightward tail end of the distribution but not entirely outside it. There may be some difference in ratings among the cartoons, though the evidence is not strong.
+
+We cannot completely reject the null hypothesis. But we could say that the ratings of Doraemon might not really be that much higher than the other 2 cartoons.

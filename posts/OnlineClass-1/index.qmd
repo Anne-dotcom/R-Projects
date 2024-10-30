@@ -1,0 +1,95 @@
+---
+title: "Online-Class-1-Space"
+author: "Anusha"
+---
+
+# Space
+
+## Introduction
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(sf)
+library(tmap)
+library(osmdata)
+library(rnaturalearth)
+library(ggformula)
+```
+
+### Kinds of Geospatial Data
+
+-   Point: Buildings, offices, venues,etc.
+
+-   LineString: Roads, rivers, railways, etc.
+
+-   Polygon: Lake, golf course, border of a country
+
+-   MultiPolygon: Any non-contiguous set of area
+
+Each cell contains a shape (polygon) for a map.
+
+### Introduction to Maps
+
+Steps in making maps:
+
+1.  Search for an area of interest.
+2.  Learn how to access spatial/map data using osmdata
+3.  Plot and dress up our map using ggplot and tmap.
+
+**Step 1: Specifying an area**
+
+-   Locate the place of interest using the search box.
+
+bbox: Bounding Box is a rectangular area you are interested in.
+
+```{r}
+bbox_1 <- matrix(
+  c(77.574028, 12.917262, 77.595073, 12.939895),
+  byrow = FALSE,
+  nrow = 2,
+  ncol = 2,
+  dimnames = list(c('x', 'y'), c('min', 'max'))
+)
+bbox_1
+```
+
+-\> Using a place name to look up a Bounding Box with osmdata::getbb. This may not always work if the place name is well known.
+
+```{r}
+bbox_2 <- osmdata::getbb("Jayanagar, Bangalore, India")
+bbox_2
+```
+
+**Step 2: Get Map Data**
+
+OpenStreetMap (OSM) provides maps of the world mostly created by volunteers.
+
+```{r}
+locations <- 
+  osmdata::opq(bbox = bbox_2) %>% 
+  osmdata::add_osm_feature(key = "amenity", 
+                           value = c("restaurant", "atm", "college")) %>% 
+  osmdata_sf() %>%  # Convert to Simple Features format
+  purrr::pluck("osm_points") # Pull out the data frame of interest
+
+# Get all buildings within my bbox
+dat_buildings <-
+  osmdata::opq(bbox = bbox_2) %>% 
+  osmdata::add_osm_feature(key = "building") %>% 
+  osmdata_sf() %>% 
+  purrr::pluck("osm_polygons") 
+
+
+```
+
+```{r}
+str(locations)
+str(dat_buildings)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = locations, fill = "gold", color = "grey", linewidth = 0.025)+    # POLYGONS
+  geom_sf(data = dat_buildings, fill = "purple") 
+```

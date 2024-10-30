@@ -1,0 +1,182 @@
+---
+title: "Pocket-Money"
+author: "Anusha"
+---
+
+# **Guys have more pocket money than Gals.**
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(mosaic)
+library(skimr)
+library(ggformula)
+library(broom)
+library(crosstable)
+library(knitr)
+library(kableExtra)
+```
+
+Let's first import and read our data set.
+
+```{r}
+money <- read_csv("../../Data/PocketMoney.csv")
+money
+```
+
+```{r}
+inspect(money)
+```
+
+```{r}
+glimpse(money)
+```
+
+## Data Munging
+
+Let us convert Gender as a factor since we perform calculations on this variable and because it has only 2 levels.
+
+We are prepping our data for various test we are going to perform.
+
+```{r}
+money <- money %>% 
+  mutate(
+    Gender = as_factor(Gender)
+  )
+glimpse(money)
+```
+
+## What is our NULL Hypothesis for this data set?
+
+**"Guys carry more cash than Gals."**
+
+To test our hypothesis, we will perform a series of steps. This will lead us to a conclusion regarding what we have stated.
+
+So, first we will find out the mean and standard deviation of money spent across the 2 genders.
+
+```{r}
+money %>% crosstable(Money_spent~Gender) %>% as_flextable()
+```
+
+The median spending is slightly higher for females compared to males. But, the means are relatively closer, with males averaging 748.6 and females 693.3. This indicates that while males might have a higher average spending, the central tendency (median) is slightly higher for females.
+
+The high standard deviations for both genders suggest that spending varies widely within each group.
+
+The data indicates that both genders have similar ranges of spending, but the higher average spending for males suggests they might be more likely to spend larger amounts compared to females.
+
+## Gender
+
+### Histogram
+
+1\.
+
+```{r}
+gf_histogram(~Money_spent, fill = ~Gender, position = "dodge", data = money) %>% 
+  #gf_facet_wrap(vars(Gender)) %>% 
+  gf_labs(title = "Who gets more Pocket Money")
+```
+
+Seems like males have spent more money, which could probably indicate that they have more pocket money.
+
+2\.
+
+```{r}
+money %>% 
+  gf_density(~Money_spent, fill = ~Gender, alpha = 0.5, title = "Who has more pocket money?") %>% 
+  gf_facet_grid(~Gender) %>% 
+  gf_fitdistr(dist = "dnorm")
+```
+
+Density plots provide a clear view of the distribution of a continuous variable.
+
+By fitting a normal distribution, we can visually assess how closely the data resembles a normal distribution. This is useful when considering whether parametric tests like t-tests are appropriate for our data analysis.
+
+Looking at this graph, we can assume that the distribution does not seem normal.
+
+## Check for Normality
+
+First, let's separate the two genders and call each group Female and Male, and then perform a normality test (shapiro test) for each of them.
+
+```{r}
+money %>% 
+  filter(Gender == "Female") %>% 
+  select(Money_spent) -> Female
+Female
+
+money %>% 
+  filter(Gender == "Male") %>% 
+  select(Money_spent) -> Male
+Male
+  
+```
+
+-\>Shapiro test:
+
+```{r}
+shapiro.test(Female$Money_spent)
+shapiro.test(Male$Money_spent)
+```
+
+In both cases, the p-values are extremely small, which indicates that we reject the null hypothesis. This means that the data for both females and males is not normal.
+
+Now, let's do a t-test (even though the distribution is not normal).
+
+-\>t-test:
+
+```{r}
+mosaic::t_test(Money_spent~Gender, data = money) %>% 
+  broom::tidy()
+```
+
+The negative difference of −55.29 indicates that females spent slightly less on average compared to males.
+
+The high p-value indicates that we do not have enough evidence to reject the null hypothesis. This suggests that the average amount of money spent between males and females is not significantly different.
+
+Since, there is such uncertainty in the t-tests we should perform some other tests.
+
+It is appropriate to conduct a Wilcox test for further analysis.
+
+-\>Wilcox test:
+
+```{r}
+wilcox.test(Money_spent~Gender, data = money,
+            conf.int = TRUE,
+            conf.level = 0.95) %>% 
+  broom::tidy()
+```
+
+The negative estimate of −55 indicates that females tend to spend less than males on average, but this difference is not statistically significant.
+
+The p-value suggests that, we fail to reject the null hypothesis.
+
+So, now let us do the permutation test.
+
+-\>Permutation test:
+
+```{r}
+obs_mean <- diffmean(Money_spent~Gender, data = money)
+obs_mean
+```
+
+As per previous calculations of the diff mean, here also we see that the difference of means is 55.2. But here it is positive as now we have calculated mean of Money spent(male) - mean of Money spent(female)
+
+```{r}
+null_dist_money <- 
+  do(4999) * diffmean(data = money, 
+                      Money_spent ~ shuffle(Gender))
+null_dist_money
+###
+prop1(~ diffmean <= obs_diff_mean, data = null_dist_money)
+###
+gf_histogram(data = null_dist_tip2, ~ diffmean, 
+             bins = 25) %>%
+  gf_vline(xintercept = obs_diff_mean, 
+           colour = "purple", linewidth = 1,
+           title = "Null Distribution by Permutation", 
+           subtitle = "Histogram") %>% 
+  gf_labs(x = "Difference in Means")
+```
+
+## *Conclusion:*
+
+The line representing our observed difference in mean is located in the center of the null distribution, this suggests that the observed difference is quite common under the null hypothesis which states that there is no effect of gender on spending.
