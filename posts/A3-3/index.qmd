@@ -1,6 +1,7 @@
 ---
 title: "Chhota-Bheem-Doraemon-Dragon-Tales"
 author: "Anusha"
+df_print: paged
 ---
 
 # **Chhota Bheem vs Doraemon vs Dragon Tale**

@@ -1,6 +1,7 @@
 ---
 title: "Pocket-Money"
 author: "Anusha"
+df_print: paged
 ---
 
 # **Guys have more pocket money than Gals.**

@@ -1,6 +1,7 @@
 ---
 title: "Grades"
 author: "Anusha"
+df_print: paged
 ---
 
 # **Art, Design, and Vocation are all diff-different.**
